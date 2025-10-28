@@ -52,6 +52,10 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
+
+  gem "strong_migrations", "~> 2.5.1"
+
+  gem "dotenv", "~> 3.1"
 end
 
 group :development do
@@ -61,6 +65,7 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
-  gem "selenium-webdriver"
+  gem "rspec-rails", "~> 8.0"
+  gem "capybara", "~> 3.40"
+  gem "selenium-webdriver", "~> 3.40"
 end
