@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_28_002348) do
+ActiveRecord::Schema[8.1].define(version: 2025_10_31_181441) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "account_settings", force: :cascade do |t|
+    t.string "account_reference", null: false
+    t.string "bundle_prefix"
+    t.string "category_prefix"
+    t.datetime "created_at", null: false
+    t.string "product_prefix"
+    t.datetime "updated_at", null: false
+    t.index ["account_reference"], name: "unique_account_settings", unique: true
+  end
 
   create_table "accounts", force: :cascade do |t|
     t.datetime "created_at", null: false
