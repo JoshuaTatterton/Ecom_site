@@ -25,7 +25,7 @@ RSpec.describe AccountGenerator, type: :model do
       }.not_to raise_error
     }.to change(Account, :count).by(1)
 
-    # Assert
+    # Assert - Currently set to camelize, could be titleize is wanted
     expect(Account.find_by(reference: "super_duper_special_awesome_guy", name: "SuperDuperSpecialAwesomeGuy")).to be_present
   end
 end
