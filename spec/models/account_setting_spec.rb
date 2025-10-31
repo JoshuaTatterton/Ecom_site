@@ -39,5 +39,63 @@ RSpec.describe AccountSetting, type: :model do
         expect(account_setting.errors).to be_added(:product_prefix, :invalid_path)
       end
     end
+
+    context "category_prefix" do
+      it "cannot be longer than 48 characters" do
+        # Act
+        account_setting.category_prefix = SecureRandom.alphanumeric(49)
+
+        # Assert
+        expect(account_setting).to be_invalid
+        expect(account_setting.errors).to be_added(:category_prefix, :too_long, count: 48)
+      end
+
+      it "is a valid URI path" do
+        # Act
+        account_setting.category_prefix = "hello world!"
+
+        # Assert
+        expect(account_setting).to be_invalid
+        expect(account_setting.errors).to be_added(:category_prefix, :invalid_path)
+      end
+
+      it "contains only a URI path" do
+        # Act
+        account_setting.category_prefix = "www.zombo.com/hello?x=y"
+
+        # Assert
+        expect(account_setting).to be_invalid
+        expect(account_setting.errors).to be_added(:category_prefix, :invalid_path)
+      end
+    end
+
+    context "bundle_prefix" do
+      it "cannot be longer than 48 characters" do
+        # Act
+        account_setting.bundle_prefix = SecureRandom.alphanumeric(49)
+
+        # Assert
+        expect(account_setting).to be_invalid
+        expect(account_setting.errors).to be_added(:bundle_prefix, :too_long, count: 48)
+      end
+
+      it "is a valid URI path" do
+        # Act
+        account_setting.bundle_prefix = "hello world!"
+
+        # Assert
+        expect(account_setting).to be_invalid
+        expect(account_setting.errors).to be_added(:bundle_prefix, :invalid_path)
+      end
+
+      it "contains only a URI path" do
+        # Act
+        account_setting.bundle_prefix = "www.zombo.com/hello?x=y"
+
+        # Assert
+        expect(account_setting).to be_invalid
+        expect(account_setting.errors).to be_added(:bundle_prefix, :invalid_path)
+      end
+    end
   end
 end

@@ -1,4 +1,4 @@
-RSpec.describe AccountGenerator, type: :model do
+RSpec.describe AccountGenerator do
   it "creates the account when providing account information" do
     # Arrange
     generator = AccountGenerator.new(reference: "ecom", name: "Ecom")
