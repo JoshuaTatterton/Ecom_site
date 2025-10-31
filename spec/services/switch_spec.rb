@@ -38,7 +38,7 @@ RSpec.describe Switch do
 
     it "de-scopes the current thread after the block is completed" do
       # Act
-      Switch.account("account") {}
+      Switch.account("account") { }
       switched_reference = Thread.current[Switch::CURRENT_ACCOUNT_KEY]
 
       # Assert

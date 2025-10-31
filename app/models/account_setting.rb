@@ -12,7 +12,7 @@ class AccountSetting < ApplicationRecord
     record.errors.add(attr, :invalid_path) if value && record.valid_path?(value)
   end
 
-  # A basic path validator to ensure there is nothing that breaks 
+  # A basic path validator to ensure there is nothing that would break when added to any path
   def valid_path?(value)
     uri = URI.parse(value)
     uri.path != value
