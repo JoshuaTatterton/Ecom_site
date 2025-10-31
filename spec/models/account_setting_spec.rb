@@ -10,6 +10,36 @@ RSpec.describe AccountSetting, type: :model do
     expect(account_setting).to be_persisted
   end
 
+  describe ".current" do
+    let!(:account_setting) { AccountSetting.create(account: account) }
+
+    it "finds the account settings for the currently switched account" do
+      # Arrange
+      found_settings = nil
+
+      # Act
+      Switch.account(account_setting.account_reference) {
+        found_settings = AccountSetting.current
+      }
+
+      # Assert
+      expect(found_settings).to eq(account_setting)
+    end
+
+    it "returns nil if no account settings exists for the currently switched account" do
+      # Arrange
+      found_settings = "AAAHHHHHHH"
+
+      # Act
+      Switch.account("AAAHHHHHHH") {
+        found_settings = AccountSetting.current
+      }
+
+      # Assert
+      expect(found_settings).to eq(nil)
+    end
+  end
+
   context "validates" do
     context "product_prefix" do
       it "cannot be longer than 48 characters" do

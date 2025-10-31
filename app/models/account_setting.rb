@@ -1,3 +1,6 @@
+# One per account record containing the account level config which should be everything
+# configurable by an account user.
+# e.g. url prefixes or default search params
 class AccountSetting < ApplicationRecord
   belongs_to :account, primary_key: :reference, foreign_key: :account_reference
 
@@ -15,5 +18,9 @@ class AccountSetting < ApplicationRecord
     uri.path != value
   rescue URI::InvalidURIError
     true
+  end
+
+  def self.current
+    find_by(account_reference: Switch.current_account)
   end
 end
