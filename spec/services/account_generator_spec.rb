@@ -1,4 +1,4 @@
-RSpec.describe AccountGenerator, type: :model do
+RSpec.describe AccountGenerator do
   it "creates the account when providing account information" do
     # Arrange
     generator = AccountGenerator.new(reference: "ecom", name: "Ecom")
@@ -24,8 +24,15 @@ RSpec.describe AccountGenerator, type: :model do
         generator.call!
       }.not_to raise_error
     }.to change(Account, :count).by(1)
+    .and change(AccountSetting, :count).by(1)
 
-    # Assert - Currently set to camelize, could be titleize is wanted
-    expect(Account.find_by(reference: "super_duper_special_awesome_guy", name: "SuperDuperSpecialAwesomeGuy")).to be_present
+    # Assert
+    aggregate_failures do
+      account = Account.find_by(reference: "super_duper_special_awesome_guy")
+      expect(account).to be_present
+      # Currently set to camelize, could be titleize is wanted
+      expect(account.name).to eq("SuperDuperSpecialAwesomeGuy")
+      expect(account.account_setting).to be_present
+    end
   end
 end

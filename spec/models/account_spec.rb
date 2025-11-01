@@ -1,6 +1,36 @@
 RSpec.describe Account, type: :model do
   let(:account) { Account.new(name: "Ecom", reference: "ecom") }
 
+  describe ".current" do
+    let!(:account) { Account.create(name: "Ecom", reference: "ecom") }
+
+    it "finds the account settings for the currently switched account" do
+      # Arrange
+      found_account = nil
+
+      # Act
+      Switch.account(account.reference) {
+        found_account = Account.current
+      }
+
+      # Assert
+      expect(found_account).to eq(account)
+    end
+
+    it "returns nil if no account account exists for the currently switched account" do
+      # Arrange
+      found_account = "AAAHHHHHHH"
+
+      # Act
+      Switch.account("AAAHHHHHHH") {
+        found_account = Account.current
+      }
+
+      # Assert
+      expect(found_account).to eq(nil)
+    end
+  end
+
   context "validates" do
     it "presence of name" do
       # Act

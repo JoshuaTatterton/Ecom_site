@@ -3,7 +3,7 @@
 # super user admin.
 # Service is to automatically create all aspects required for immediate usage.
 #   - Account
-#   - AccountSetting (Soon)
+#   - AccountSetting
 #   - User (Soon)
 #   - Role (Soon)
 class AccountGenerator
@@ -17,6 +17,7 @@ class AccountGenerator
 
     Account.transaction do
       account.save!
+      AccountSetting.create!(account: account)
     end
   end
 end
