@@ -41,7 +41,7 @@ RSpec.describe AccountSetting, type: :model do
   end
 
   context "validates" do
-    context "product_prefix" do
+    context "#product_prefix" do
       it "cannot be longer than 48 characters" do
         # Act
         account_setting.product_prefix = SecureRandom.alphanumeric(49)
@@ -70,7 +70,7 @@ RSpec.describe AccountSetting, type: :model do
       end
     end
 
-    context "category_prefix" do
+    context "#category_prefix" do
       it "cannot be longer than 48 characters" do
         # Act
         account_setting.category_prefix = SecureRandom.alphanumeric(49)
@@ -99,7 +99,7 @@ RSpec.describe AccountSetting, type: :model do
       end
     end
 
-    context "bundle_prefix" do
+    context "#bundle_prefix" do
       it "cannot be longer than 48 characters" do
         # Act
         account_setting.bundle_prefix = SecureRandom.alphanumeric(49)
