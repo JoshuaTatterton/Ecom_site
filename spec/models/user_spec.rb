@@ -48,6 +48,20 @@ RSpec.describe User, type: :model do
           expect(user.errors).to be_added(:name, :blank)
         end
       end
+
+      it "is DB required when awaiting_authentication: false" do
+        # Arrange
+        user = User.create(
+          email: "real@email.com",
+          password: "password",
+          password_confirmation: "password"
+        )
+
+        # Act & Assert
+        expect {
+          user.update_columns(awaiting_authentication: false)
+        }.to raise_error(ActiveRecord::CheckViolation, /user_name_required/)
+      end
     end
 
     context "#password" do
@@ -60,6 +74,16 @@ RSpec.describe User, type: :model do
           expect(user).to be_invalid
           expect(user.errors).to be_added(:password, :blank)
         end
+      end
+
+      it "is DB required when awaiting_authentication: false" do
+        # Arrange
+        user = User.create(email: "real@email.com", name: "me")
+
+        # Act & Assert
+        expect {
+          user.update_columns(awaiting_authentication: false)
+        }.to raise_error(ActiveRecord::CheckViolation, /user_password_required/)
       end
     end
   end
