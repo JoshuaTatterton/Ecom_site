@@ -7,7 +7,7 @@ class User < ApplicationRecord
 
   attr_accessor :password_digest, :recovery_password_digest
 
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :name, presence: true, unless: :awaiting_authentication
   # Validate blank is allowed because of has_secure_password default
   # validations we want to keep after authenticating
