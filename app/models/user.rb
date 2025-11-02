@@ -5,8 +5,6 @@ class User < ApplicationRecord
   has_secure_password
   has_secure_password :recovery_password, validations: false
 
-  attr_accessor :password_digest, :recovery_password_digest
-
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
   validates :name, presence: true, unless: :awaiting_authentication
   # Validate blank is allowed because of has_secure_password default
