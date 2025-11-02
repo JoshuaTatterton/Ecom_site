@@ -12,15 +12,15 @@ class AccountSetting < ApplicationRecord
     record.errors.add(attr, :invalid_path) if value && record.valid_path?(value)
   end
 
+  def self.current
+    find_by(account_reference: Switch.current_account)
+  end
+
   # A basic path validator to ensure there is nothing that would break when added to any path
   def valid_path?(value)
     uri = URI.parse(value)
     uri.path != value
   rescue URI::InvalidURIError
     true
-  end
-
-  def self.current
-    find_by(account_reference: Switch.current_account)
   end
 end
