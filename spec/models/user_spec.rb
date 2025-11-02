@@ -152,7 +152,7 @@ RSpec.describe User, type: :model do
       # Arrange
       email = "real@email.com"
       password = "AHHHHHH"
-      user = User.create(email: email, password: password, password_confirmation: password)
+      user = User.create(email: email)
 
       # Act
       token = user.password_reset_token
