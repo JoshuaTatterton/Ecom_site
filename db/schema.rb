@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_11_01_202739) do
+ActiveRecord::Schema[8.1].define(version: 2025_11_02_202601) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -30,6 +30,15 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_01_202739) do
     t.string "reference", null: false
     t.datetime "updated_at", null: false
     t.index ["reference"], name: "unique_accounts", unique: true
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "account_reference", null: false
+    t.boolean "administrator", default: false, null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.jsonb "permissions", default: [], null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|

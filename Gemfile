@@ -20,6 +20,8 @@ gem "jbuilder"
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 
+gem "cancancan", "~> 3.6"
+
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
@@ -41,6 +43,8 @@ gem "thruster", require: false
 gem "image_processing", "~> 1.2"
 
 gem "pry", "~> 0.15.0"
+
+gem "activerecord_json_validator", "~> 3.1"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
@@ -70,4 +74,5 @@ group :test do
   gem "rspec-rails", "~> 8.0"
   gem "capybara", "~> 3.40"
   gem "selenium-webdriver", "~> 3.40"
+  gem "database_cleaner-active_record", "~> 2.2"
 end
