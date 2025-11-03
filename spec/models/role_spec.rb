@@ -16,6 +16,19 @@ RSpec.describe Role, type: :model do
   end
 
   context "validations" do
+    describe "#name" do
+      it "is required" do
+        # Act
+        role = Role.new
+
+        # Assert
+        aggregate_failures do
+          expect(role).to be_invalid
+          expect(role.errors).to be_added(:name, :blank)
+        end
+      end
+    end
+
     describe "#permissions" do
       it "must be valid json format" do
         # Arrange
