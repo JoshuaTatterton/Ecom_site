@@ -36,3 +36,7 @@ en:
           attributes:
             product_prefix:
               invalid_path: "is an invalid URL path"
+        role:
+          attributes:
+            permissions:
+              invalid_json: "invalid"

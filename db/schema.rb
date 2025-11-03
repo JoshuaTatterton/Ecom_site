@@ -37,7 +37,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_02_202601) do
     t.boolean "administrator", default: false, null: false
     t.datetime "created_at", null: false
     t.string "name", null: false
-    t.string "permissions", default: [], null: false, array: true
+    t.jsonb "permissions", default: [], null: false
     t.datetime "updated_at", null: false
   end
 

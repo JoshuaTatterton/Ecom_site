@@ -5,7 +5,7 @@ class CreateRoles < ActiveRecord::Migration[8.1]
       t.string :name, null: false
 
       t.boolean :administrator, null: false, default: false
-      t.string :permissions, null: false, array: true, default: []
+      t.jsonb :permissions, null: false, default: []
 
       t.timestamps
     end
