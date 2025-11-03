@@ -73,6 +73,6 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "rspec-rails", "~> 8.0"
   gem "capybara", "~> 3.40"
-  gem "selenium-webdriver", "~> 3.40"
+  gem "selenium-webdriver", "~> 4.38"
   gem "database_cleaner-active_record", "~> 2.2"
 end
