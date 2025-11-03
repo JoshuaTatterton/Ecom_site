@@ -2,6 +2,9 @@
 class User < ApplicationRecord
   include ActiveModel::SecurePassword
 
+  has_many :memberships
+  has_many :roles, through: :memberships
+
   has_secure_password
   has_secure_password :recovery_password, validations: false
 
