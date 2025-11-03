@@ -1,16 +1,30 @@
 RSpec.describe Ability do
-  describe ".current_account" do
-    it "returns the reference of the currently scoped account" do
-      # Arrange
-      reference = nil
+  let(:role) { Role.create(name: "a", permissions: [ { resource: "role", action: "create" } ]) }
 
-      # Act
-      Switch.account("account") {
-        reference = Switch.current_account
-      }
+  it "returns true when role permission is allowed" do
+    # Act
+    ability = Ability.new(role)
 
-      # Assert
-      expect(reference).to eq("account")
-    end
+    # Assert
+    expect(ability.can?(:create, :role)).to eq(true)
+  end
+
+  it "returns false when role permission is not allowed" do
+    # Act
+    ability = Ability.new(role)
+
+    # Assert
+    expect(ability.can?(:burn, :everything)).to eq(false)
+  end
+
+  it "has global permissions with account administrator role" do
+    # Arrange
+    role = Role.create(name: "a", administrator: true, permissions: [])
+
+    # Act
+    ability = Ability.new(role)
+
+    # Assert
+    expect(ability.can?(:burn, :everything)).to eq(true)
   end
 end

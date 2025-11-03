@@ -1,7 +1,7 @@
 RSpec.describe Role, type: :model do
   it "is creatable with permissions" do
     # Act
-    role = Role.create(name: "Basic", permissions: [{ resource: "product", permission: "create" }])
+    role = Role.create(name: "Basic", permissions: [ { resource: "product", action: "create" } ])
 
     # Assert
     expect(role).to be_persisted
@@ -32,7 +32,7 @@ RSpec.describe Role, type: :model do
     describe "#permissions" do
       it "must be valid json format" do
         # Arrange
-        invalid_permissions = [{ "this_makes" => "no_sense" }]
+        invalid_permissions = [ { "this_makes" => "no_sense" } ]
 
         # Act
         role = Role.new(name: "Bare", permissions: invalid_permissions)
