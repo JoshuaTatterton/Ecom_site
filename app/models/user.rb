@@ -2,6 +2,14 @@
 class User < ApplicationRecord
   include ActiveModel::SecurePassword
 
+  # Relationships outside of the account scope
+  has_many :user_memberships
+  has_many :accounts, through: :user_memberships
+
+  # Relationships within the account scope
+  has_one :membership
+  has_one :role, through: :membership
+
   has_secure_password
   has_secure_password :recovery_password, validations: false
 
