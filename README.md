@@ -1,6 +1,6 @@
 # Ecom Portal
 
-In lieu of any ideas of anything to build, I'm just rebuilding an ecom platform I have worked on before but with blackjack and hookers. ¯\_(ツ)_/¯
+In lieu of any ideas of anything to build, I'm just rebuilding an ecom platform I have worked on before but with blackjack and hookers. ¯\\_(ツ)_/¯
 
 Plans:
 
