@@ -1,24 +1,23 @@
-# README
+# Ecom Portal
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+In lieu of any ideas of anything to build, I'm just rebuilding an ecom platform I have worked on before but with blackjack and hookers. ¯\_(ツ)_/¯
 
-Things you may want to cover:
+Plans:
 
-* Ruby version
+  - Rails B/E
+  - Jsonapi resource api
+  - Graphql api (? maybe)
+  - Kafka (microservice "synergy")
 
-* System dependencies
+Features:
+  - PIM
+  - CSM
+  - Carts
+  - OMS
+  - ...
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Admin Panel/Portal:
+  - Rails
+  - Turbo
+  - Tailwind??
+  - Mini React apps (complicated forms, promotions flashbacks)
