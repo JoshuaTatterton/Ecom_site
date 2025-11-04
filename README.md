@@ -21,3 +21,24 @@ Admin Panel/Portal:
   - Turbo
   - Tailwind??
   - Mini React apps (complicated forms, promotions flashbacks)
+
+### Booting
+
+#### Production:
+
+N/A
+
+#### Dev: 
+
+```bash
+docker-compose up --watch
+```
+
+Site available at `localhost:3000`
+
+Command line works as usual:
+ 
+```bash
+rails c
+rspec
+```
