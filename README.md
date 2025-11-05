@@ -19,7 +19,7 @@ Features:
 Admin Panel/Portal:
   - Rails
   - Turbo
-  - Tailwind??
+  - Bootstrap
   - Mini React apps (complicated forms, promotions flashbacks)
 
 ### Booting
