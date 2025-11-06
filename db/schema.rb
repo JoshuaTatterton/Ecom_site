@@ -35,9 +35,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_212937) do
   create_table "memberships", force: :cascade do |t|
     t.string "account_reference", null: false
     t.datetime "created_at", null: false
-    t.bigint "role_id"
+    t.bigint "role_id", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.index ["account_reference", "user_id"], name: "unique_user_account_memberships", unique: true
     t.index ["role_id"], name: "index_memberships_on_role_id"
     t.index ["user_id"], name: "index_memberships_on_user_id"
@@ -50,6 +50,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_11_03_212937) do
     t.string "name", null: false
     t.jsonb "permissions", default: [], null: false
     t.datetime "updated_at", null: false
+    t.index ["account_reference", "name"], name: "unique_account_role_names", unique: true
   end
 
   create_table "users", force: :cascade do |t|

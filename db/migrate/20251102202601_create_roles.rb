@@ -1,4 +1,6 @@
 class CreateRoles < ActiveRecord::Migration[8.1]
+  disable_ddl_transaction!
+
   def change
     create_table :roles do |t|
       t.string :account_reference, null: false
@@ -9,5 +11,11 @@ class CreateRoles < ActiveRecord::Migration[8.1]
 
       t.timestamps
     end
+
+    add_index :roles,
+      [ :account_reference, :name ],
+      unique: true,
+      name: "unique_account_role_names",
+      algorithm: :concurrently
   end
 end

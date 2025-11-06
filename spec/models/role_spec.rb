@@ -27,6 +27,21 @@ RSpec.describe Role, type: :model do
           expect(role.errors).to be_added(:name, :blank)
         end
       end
+
+      it "is unique per Account" do
+        # Arrange
+        role_name = "Unique"
+        Role.create(name: role_name)
+
+        # Act
+        role = Role.new(name: role_name)
+
+        # Assert
+        aggregate_failures do
+          expect(role).to be_invalid
+          expect(role.errors).to be_added(:name, :taken, value: role_name)
+        end
+      end
     end
 
     describe "#permissions" do
