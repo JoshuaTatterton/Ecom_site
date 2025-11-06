@@ -4,10 +4,14 @@
 # this.
 require 'database_cleaner/active_record'
 
-DatabaseCleaner.strategy = :transaction
-
 RSpec.configure do |config|
   config.around(:each) do |example|
+    if [:system].include?(example.metadata[:type])
+      DatabaseCleaner.strategy = :truncation
+    else
+      DatabaseCleaner.strategy = :transaction
+    end
+
     DatabaseCleaner.cleaning do
       example.run
     end

@@ -12,9 +12,11 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  resources :admin
+  post "admin/sign_in", to: "admin#create"
+  resources :admin, param: :account_reference, only: [:index]
 
-  namespace "/admin/:account_reference" do
-
-  end
+  # namespace "admin" do
+  #   namespace ":account_reference" do
+  #   end
+  # end
 end

@@ -4,7 +4,7 @@
   </div>
 
   <div class="card-body">
-    <%= form_for :user do |f| %>
+    <%= form_for :user, url: admin_sign_in_path do |f| %>
       <div class="row">
         <div class="col">
           <%= f.label :email, "Email address:", class: "form-label" %>
