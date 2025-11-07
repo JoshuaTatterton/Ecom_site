@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   post "admin/sign_in", to: "admin#create"
-  resources :admin, param: :account_reference, only: [:index]
+  resources :admin, param: :account_reference, only: [:index, :show]
 
   # namespace "admin" do
   #   namespace ":account_reference" do

@@ -1,4 +1,4 @@
-RSpec.describe "Admin", type: :system, js: true do
+RSpec.describe "Admin", type: :system do
   scenario "can sign in" do
     # Arrange
     visit admin_index_path
@@ -14,6 +14,8 @@ RSpec.describe "Admin", type: :system, js: true do
     aggregate_failures do
       expect(current_path).to eq("/admin")
       expect(page).not_to have_content("Sign in")
+      expect(page).to have_selector("a[href='#{admin_path("primary")}']")
+      expect(page).to have_selector("a[href='#{admin_path("secondary")}']")
     end
   end
 end

@@ -1,6 +1,5 @@
-<div><%= current_user %></div>
 <% if current_user %>
-
+  <%= render "account_cards" %>
 <% else %>
   <%= render "sign_in_form" %>
 <% end %>
