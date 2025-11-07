@@ -11,8 +11,9 @@ services:
       DATABASE_HOST: "db"
     develop:
       watch:
-        - action: rebuild
+        - action: sync
           path: .
+          target: /rails
   db:
     image: postgres:18.0
     ports:
