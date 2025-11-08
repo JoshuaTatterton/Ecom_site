@@ -8,3 +8,8 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+.bi {
+  height: 1em;
+  width: 1em;
+}
