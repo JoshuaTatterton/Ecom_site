@@ -24,6 +24,12 @@ class AdminController < ApplicationController
   def show
   end
 
+  def destroy
+    sign_out!
+
+    redirect_to admin_index_path
+  end
+
   private
 
   def sign_in_params

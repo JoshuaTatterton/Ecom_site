@@ -9,6 +9,11 @@ module UserSession
     session[:user_id] = user.id
   end
 
+  def sign_out!
+    session.delete(:user_id)
+    @current_user = nil
+  end
+
   def current_user
     @current_user ||= signed_in? && User.includes(:accounts).find(session[:user_id])
   end

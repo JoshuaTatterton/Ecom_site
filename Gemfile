@@ -77,4 +77,5 @@ group :test do
   gem "capybara", "~> 3.40"
   gem "selenium-webdriver", "~> 4.8"
   gem "database_cleaner-active_record", "~> 2.2"
+  gem "rack_session_access", "~> 0.2.0"
 end
