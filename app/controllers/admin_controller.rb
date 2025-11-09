@@ -33,6 +33,6 @@ class AdminController < ApplicationController
   private
 
   def sign_in_params
-    params.expect(user: [:email, :password])
+    params.expect(user: [ :email, :password ])
   end
 end

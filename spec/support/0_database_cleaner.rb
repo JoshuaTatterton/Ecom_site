@@ -6,7 +6,7 @@ require 'database_cleaner/active_record'
 
 RSpec.configure do |config|
   config.around(:each) do |example|
-    if [:system].include?(example.metadata[:type])
+    if [ :system ].include?(example.metadata[:type])
       DatabaseCleaner.strategy = :truncation
     else
       DatabaseCleaner.strategy = :transaction
