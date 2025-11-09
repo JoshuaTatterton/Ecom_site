@@ -10,6 +10,16 @@ RSpec.describe User, type: :model do
     expect(user).to be_persisted
   end
 
+  describe "#email" do
+    it "is normalized" do
+      # Act
+      user = User.create(email: " Real@Email.com ")
+
+      # Assert
+      expect(user.reload.email).to eq("real@email.com")
+    end
+  end
+
   describe "#role" do
     it "returns the role for the currently scoped account" do
       # Arrange

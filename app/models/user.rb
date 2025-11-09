@@ -19,6 +19,8 @@ class User < ApplicationRecord
   # validations we want to keep after authenticating
   validate :password_blank_allowed, if: :awaiting_authentication
 
+  normalizes :email, with: ->(e) { e.strip.downcase }
+
   private
 
   def password_blank_allowed

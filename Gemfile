@@ -46,6 +46,8 @@ gem "pry", "~> 0.15.0"
 
 gem "activerecord_json_validator", "~> 3.1"
 
+gem "openssl", "~> 3.3"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
@@ -73,6 +75,7 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "rspec-rails", "~> 8.0"
   gem "capybara", "~> 3.40"
-  gem "selenium-webdriver", "~> 3.40"
+  gem "selenium-webdriver", "~> 4.8"
   gem "database_cleaner-active_record", "~> 2.2"
+  gem "rack_session_access", "~> 0.2.0"
 end

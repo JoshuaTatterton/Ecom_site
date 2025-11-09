@@ -1,0 +1,22 @@
+<div class="row">
+  <% current_user.accounts.each do |account| %>
+    <div class="col-4">
+      <div class="card">
+        <%= link_to admin_path(account.reference), class: "link-dark link-underline link-underline-opacity-0 link-underline-opacity-75-hover" do %>
+          <div class="card-header hstack">
+            <span class="me-auto">
+              <%= account.name %>
+            </span>
+            <%= image_tag("bootstrap/arrow-up-right.svg", class: "bi bi-arrow-up-right") %>
+          </div>
+        <% end %>
+
+        <div class="card-body">
+          <% Switch.account(account.reference) do %>
+            Role: <%= current_user.role.name %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
