@@ -1,0 +1,43 @@
+<div class="card">
+  <div class="card-header hstack">
+    <span class="me-auto">
+      Roles
+    </span>
+
+    <%= link_to new_admin_role_path(Switch.current_account) do %>
+      <button type="button" class="btn btn-success">
+        <%= render "generic/bootstrap_icon", icon: "plus-circle" %>
+      </button>
+    <% end %>
+  </div>
+
+  <div class="card-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Name:</th>
+          <th scope="col">In Use:</th>
+          <th scope="col">Last Updated:</th>
+          <th scope="col">Actions:</th>
+        </tr>
+      </thead>
+
+      <tbody class="table-group-divider">
+        <% roles.each do |role| %>
+          <tr>
+            <td><%= role.name %></td>
+            <td>
+              <% if role.memberships.any? %>
+                <%= render "generic/bootstrap_icon", icon: "check-circle", type: "success" %>
+              <% else %>
+                <%= render "generic/bootstrap_icon", icon: "ban", type: "success" %>
+              <% end %>
+            </td>
+            <td><%= role.updated_at %></td>
+            <td><%= "..." %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
