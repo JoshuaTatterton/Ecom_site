@@ -15,6 +15,6 @@ Rails.application.routes.draw do
   post "admin/sign_in", to: "admin#create"
   delete "admin/sign_out", to: "admin#destroy"
   resources :admin, param: :account_reference, only: [ :index, :show ] do
-    resources :roles, controller: "admin/roles"
+    resources :roles, controller: "admin/roles", except: [ :show ]
   end
 end
