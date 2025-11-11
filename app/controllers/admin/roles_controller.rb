@@ -30,6 +30,13 @@ module Admin
       end
     end
 
+    def destroy
+      @role = Role.find(params[:id])
+      role.destroy
+
+      redirect_to action: :index
+    end
+
     private
 
     def role_params

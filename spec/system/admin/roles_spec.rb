@@ -13,11 +13,17 @@ RSpec.describe "Roles Admin", type: :system do
         within("tbody#roles") do
           within("tr:nth-child(1)") do
             expect(page).to have_content(sweet_role.name)
-            expect(page).to have_selector("a[href='#{edit_admin_role_path(Switch.current_account, sweet_role.id)}']")
+            edit_path = edit_admin_role_path(Switch.current_account, sweet_role.id)
+            expect(page).to have_selector("a[href='#{edit_path}']")
+            delete_path = admin_role_path(Switch.current_account, sweet_role.id)
+            expect(page).to have_selector("a[href='#{delete_path}'][data-turbo-method='delete']")
           end
           within("tr:nth-child(2)") do
             expect(page).to have_content(admin_role.name)
-            expect(page).not_to have_selector("a[href='#{edit_admin_role_path(Switch.current_account, admin_role.id)}']")
+            edit_path = edit_admin_role_path(Switch.current_account, admin_role.id)
+            expect(page).not_to have_selector("a[href='#{edit_path}']")
+            delete_path = admin_role_path(Switch.current_account, admin_role.id)
+            expect(page).not_to have_selector("a[href='#{delete_path}'][data-turbo-method='delete']")
           end
         end
         expect(page).to have_selector("a[href='#{new_admin_role_path("primary")}']")
@@ -57,6 +63,26 @@ RSpec.describe "Roles Admin", type: :system do
       aggregate_failures do
         expect(page).to have_content("Sweet Role")
         expect(role.reload.name).to eq("Sweet Role")
+      end
+    end
+  end
+
+  describe "#destroy" do
+    scenario "destroying a role" do
+      # Arrange
+      role = Role.create(name: "AHHHH")
+
+      visit admin_roles_path(Switch.current_account)
+
+      # Act
+      within("tr#role_#{role.id}") do
+        find("a[href='#{admin_role_path(Switch.current_account, role.id)}']").click
+      end
+
+      # Assert
+      aggregate_failures do
+        expect(page).not_to have_content(role.name)
+        expect(Role.find_by(id: role.id)).to eq(nil)
       end
     end
   end
