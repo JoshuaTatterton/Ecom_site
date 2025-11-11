@@ -1,0 +1,17 @@
+<%= form_for role, url: admin_role_path(Switch.current_account, role.id) do |f| %>
+  <div class="card">
+    <div class="card-header hstack">
+      <span class="me-auto">
+        Role
+      </span>
+    </div>
+
+    <div class="card-body">
+      <%= render "form", f: f %>
+    </div>
+
+    <div class="card-footer">
+      <%= f.submit "Update", class: "btn btn-success" %>
+    </div>
+  </div>
+<% end %>

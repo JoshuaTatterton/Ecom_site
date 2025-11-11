@@ -34,7 +34,19 @@
               <% end %>
             </td>
             <td><%= role.updated_at %></td>
-            <td><%= "..." %></td>
+            <td>
+              <% if role.administrator || current_user.role.id == role.id %>
+                <button type="button" class="btn btn-secondary" disabled>
+                  <%= render "generic/bootstrap_icon", icon: "pencil" %>
+                </button>
+              <% else %>
+                <%= link_to edit_admin_role_path(Switch.current_account, role.id) do %>
+                  <button type="button" class="btn btn-primary">
+                    <%= render "generic/bootstrap_icon", icon: "pencil" %>
+                  </button>
+                <% end %>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
