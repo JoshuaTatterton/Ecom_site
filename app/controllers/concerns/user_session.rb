@@ -1,6 +1,12 @@
 module UserSession
   extend ActiveSupport::Concern
 
+  def self.included(base)
+    base.class_eval do
+      helper_method :current_user
+    end
+  end
+
   def signed_in?
     session[:user_id].present?
   end

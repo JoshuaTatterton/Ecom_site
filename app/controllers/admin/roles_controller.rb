@@ -1,5 +1,7 @@
 module Admin
   class RolesController < ApplicationController
+    include Pagination
+
     helper_method :roles, :role
 
     def index
@@ -51,7 +53,11 @@ module Admin
     end
 
     def roles
-      @roles ||= Role.order(id: :desc)
+      @roles ||= base_scope.offset(page_offset).limit(page_limit)
+    end
+
+    def base_scope
+      Role.order(id: :desc)
     end
 
     def role
