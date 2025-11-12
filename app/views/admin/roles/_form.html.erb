@@ -1,7 +1,41 @@
+<div class="card">
+  <div class="card-header">
+    Role
+  </div>
 
-<div class="row">
-  <div class="col">
-    <%= f.label :name, "Name:", class: "form-label" %>
-    <%= f.text_field :name, class: "form-control" %>
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <%= f.label :name, "Name:", class: "form-label" %>
+        <%= f.text_field :name, class: "form-control" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    User Permissions:
+  </div>
+
+  <div class="card-body" id="user_permissions">
+    <div class="row">
+      <div class="col">
+        <%#= PermissionsHelper::USER_PERMISSIONS.dup.map.inspect %>
+        <% PermissionsHelper::USER_PERMISSIONS.each_with_index do |permission, index| %>
+          <% resource = permission["resource"] %>
+          <% action = permission["action"] %>
+
+          <div class="form-check">
+            <%= check_box_tag "role[permissions][user_#{index}][#{resource}][#{action}]", true, nil, class: "form-check-input" %>
+            <%= label_tag "role[permissions][user_#{index}][#{resource}][#{action}]", "#{action.titleize} #{resource.titleize}", class: "form-check-label" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <%= f.submit type, class: "btn btn-success" %>
   </div>
 </div>

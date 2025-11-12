@@ -10,7 +10,8 @@ module Admin
 
     def create
       @role = Role.new(role_params)
-      if role.save
+      PermissionsHelper.add_sanitized_form_permissions(@role, permissions_params)
+      if @role.save
         redirect_to action: :index
       else
         render :new
@@ -23,6 +24,7 @@ module Admin
 
     def update
       @role = Role.find(params[:id])
+      PermissionsHelper.add_sanitized_form_permissions(@role, permissions_params)
       if role.update(role_params)
         redirect_to action: :index
       else
@@ -40,7 +42,12 @@ module Admin
     private
 
     def role_params
-      params.expect(role: [ :name ])
+      params.require(:role).permit(:name)
+    end
+
+    def permissions_params
+      # Default to {} incase all permissions are false so would be empty
+      params.require(:role)[:permissions]&.permit! || {}
     end
 
     def roles

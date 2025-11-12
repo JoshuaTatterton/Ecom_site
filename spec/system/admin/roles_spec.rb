@@ -32,7 +32,7 @@ RSpec.describe "Roles Admin", type: :system do
   end
 
   describe "#create" do
-    scenario "creating a role with all permissions" do
+    scenario "creating a role with no permissions" do
       # Act
       visit new_admin_role_path(Switch.current_account)
 
@@ -42,7 +42,29 @@ RSpec.describe "Roles Admin", type: :system do
       end
 
       # Assert
-      expect(page).to have_content("Sweet Role")
+      aggregate_failures do
+        expect(page).to have_content("Sweet Role")
+        created_role = Role.find_by(name: "Sweet Role")
+        expect(created_role.permissions).to eq([])
+      end
+    end
+
+    scenario "creating a role with all permissions" do
+      # Act
+      visit new_admin_role_path(Switch.current_account)
+
+      within("form[action='#{admin_roles_path(Switch.current_account)}']") do
+        find("input[name='role[name]']").fill_in(with: "Sweet Role")
+        all("input[type='checkbox']").each(&:click)
+        find("input[type='submit']").click
+      end
+
+      # Assert
+      aggregate_failures do
+        expect(page).to have_content("Sweet Role")
+        created_role = Role.find_by(name: "Sweet Role")
+        expect(created_role.permissions).to eq(PermissionsHelper::ALL_PERMISSIONS)
+      end
     end
   end
 
@@ -56,6 +78,9 @@ RSpec.describe "Roles Admin", type: :system do
 
       within("form[action='#{admin_role_path(Switch.current_account, role.id)}']") do
         find("input[name='role[name]']").fill_in(with: "Sweet Role")
+        within("#user_permissions") do
+          all("input[type='checkbox']").first.click
+        end
         find("input[type='submit']").click
       end
 
