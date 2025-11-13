@@ -1,4 +1,4 @@
-RSpec.describe "Admin", type: :system, js: true do
+RSpec.describe "Admin", type: :system, js: true, signed_out: true do
   describe "#index" do
     scenario "can sign in" do
       # Arrange

@@ -1,0 +1,78 @@
+<div class="card">
+  <div class="card-header hstack">
+    <span class="me-auto">
+      Roles
+    </span>
+
+    <%= link_to new_admin_role_path(Switch.current_account) do %>
+      <button type="button" class="btn btn-success">
+        <%= render "generic/bootstrap_icon", icon: "plus-circle" %>
+      </button>
+    <% end %>
+  </div>
+
+  <div class="card-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Name:</th>
+          <th scope="col">In Use:</th>
+          <th scope="col">Last Updated:</th>
+          <th scope="col">Actions:</th>
+        </tr>
+      </thead>
+
+      <tbody class="table-group-divider" id="roles">
+        <% roles.each do |role| %>
+          <tr id="role_<%= role.id %>">
+            <td><%= role.name %></td>
+            <td>
+              <% if role.memberships.any? %>
+                <%= render "generic/bootstrap_icon", icon: "check-circle", type: "success" %>
+              <% else %>
+                <%= render "generic/bootstrap_icon", icon: "ban", type: "danger" %>
+              <% end %>
+            </td>
+            <td><%= role.updated_at %></td>
+            <td>
+              <% if role.administrator || current_user.role.id == role.id %>
+                <button type="button" class="btn btn-secondary" disabled>
+                  <%= render "generic/bootstrap_icon", icon: "pencil" %>
+                </button>
+              <% else %>
+                <%= link_to edit_admin_role_path(Switch.current_account, role.id),
+                      class: "link-underline link-underline-opacity-0" do %>
+                  <button type="button" class="btn btn-primary">
+                    <%= render "generic/bootstrap_icon", icon: "pencil" %>
+                  </button>
+                <% end %>
+              <% end %>
+
+              <% if role.administrator || role.memberships.any? %>
+                <button type="button" class="btn btn-secondary" disabled>
+                  <%= render "generic/bootstrap_icon", icon: "trash" %>
+                </button>
+              <% else %>
+                <%= link_to admin_role_path(Switch.current_account, role.id),
+                  class: "link-underline link-underline-opacity-0",
+                  data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Are you sure you want to delete Role: #{role.name}?"
+                  } do
+                %>
+                  <button type="button" class="btn btn-danger">
+                    <%= render "generic/bootstrap_icon", icon: "trash" %>
+                  </button>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer">
+    <%= render "generic/pagination" %>
+  </div>
+</div>

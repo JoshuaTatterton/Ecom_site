@@ -1,8 +1,6 @@
 class AdminController < ApplicationController
   include UserSession
 
-  helper_method :current_user
-
   def index
   end
 

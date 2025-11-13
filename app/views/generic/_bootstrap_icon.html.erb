@@ -1,0 +1,6 @@
+<%# icon - REQUIRED # expect pathname to locally stored bootstrap icon ("bootstrap/#{icon}.svg") %>
+<% type ||= nil # Expected most of the time, to be a bootstrap utility name e.g. primary/success/danger %>
+<% classes ||= "" # Expected to be used less, a bonus list of classes to be added %>
+<svg class="bi bi-<%= icon %> <%= type ? "text-#{type}" : "" %> <%= classes %>">
+  <use xlink:href="<%= asset_path("bootstrap/#{icon}.svg") %>"></use>
+</svg>

@@ -22,4 +22,11 @@ RSpec.configure do |config|
       }
     end
   end
+
+  config.before(:each, type: :system) do |example|
+    if !example.metadata[:signed_out]
+      user = User.first
+      page.set_rack_session(user_id: user.id)
+    end
+  end
 end
