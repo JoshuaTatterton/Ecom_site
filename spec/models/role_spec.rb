@@ -115,5 +115,21 @@ RSpec.describe Role, type: :model do
         end
       end
     end
+
+    describe "#memberships" do
+      it "cannot destroy a role with memberships" do
+        # Arrange
+        role = Role.create(name: "Who?")
+        user = role.users.create(email: "user@email.com")
+
+        # Act & Assert
+        expect {
+          role.destroy
+        }.to change(Role, :count).by(0)
+
+        # Assert
+        expect(role.errors).to be_added(:base, :"restrict_dependent_destroy.has_many", record: "memberships")
+      end
+    end
   end
 end

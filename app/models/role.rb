@@ -3,7 +3,7 @@ class Role < ApplicationRecord
 
   PERMISSIONS_SCHEMA = Rails.root.join("app", "schemas", "role_permissions.json_schema")
 
-  has_many :memberships
+  has_many :memberships, dependent: :restrict_with_error
   has_many :users, through: :memberships
 
   attr_readonly :administrator
