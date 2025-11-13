@@ -71,7 +71,7 @@ RSpec.describe "Roles Admin", type: :system do
   describe "#update" do
     scenario "can update a role name, add and remove permissions" do
       # Arrange
-      role = Role.create(name: "AHHHH", permissions: [{ "resource" => "roles", "action" => "update" }])
+      role = Role.create(name: "AHHHH", permissions: [ { "resource" => "roles", "action" => "update" } ])
 
       # Act
       visit edit_admin_role_path(Switch.current_account, role.id)
@@ -89,7 +89,7 @@ RSpec.describe "Roles Admin", type: :system do
       aggregate_failures do
         expect(page).to have_content("Sweet Role")
         expect(role.reload.name).to eq("Sweet Role")
-        expect(role.permissions).to eq([{ "resource" => "roles", "action" => "create" }])
+        expect(role.permissions).to eq([ { "resource" => "roles", "action" => "create" } ])
       end
     end
   end
