@@ -1,38 +1,26 @@
 module PermissionsHelper
   USER_PERMISSIONS = [
-    { "resource" => "roles", "action" => "view" }, { "resource" => "roles", "action" => "create" }, 
-    { "resource" => "roles", "action" => "update" }, { "resource" => "roles", "action" => "delete" } ]
+    { "resource" => "roles", "action" => "view" }, { "resource" => "roles", "action" => "create" },
+    { "resource" => "roles", "action" => "update" }, { "resource" => "roles", "action" => "delete" }
+  ]
   ALL_PERMISSIONS = USER_PERMISSIONS
 
   # Map permissions into PERMISSIONS format each param should look like:
-  # { resource: { action: "true" } }
-  # Stop processing and add active record error if it doesn't match this format
-  def self.add_sanitized_form_permissions(role, permission_params)
-    permissions = permission_params.values.map do |permission|
-      if permission.keys.count == 1
-        resource = permission.keys[0]
-        action_param = permission.values[0]
-
-        if action_param.keys.count == 1
-          action = action_param.keys[0]
-
-          if action_param.values[0] == "true"
-            { resource: resource, action: action }
-          else
-            throw PermissionsInvalidError
-          end
-        else
-          throw PermissionsInvalidError
-        end
-      else
-        throw PermissionsInvalidError
+  # { resource: { action_1: "true", action_2: "true", ... }, ... }
+  def self.serialized_form_permissions(permission_params)
+    permission_params.keys.each_with_object([]) do |resource, permissions|
+      permission_params[resource].each do |action, value|
+        permissions << { resource: resource, action: action } if value == "true"
       end
     end
-
-    role.permissions = permissions
-  rescue PermissionsInvalidError
-    role.errors.add(:permissions, :invalid)
   end
 
-  class PermissionsInvalidError < StandardError; end
+  def self.permitted_params
+    ALL_PERMISSIONS.each_with_object({}) do |permission, param|
+      resource = permission["resource"]
+      action = permission["action"]
+      param[resource] ||= []
+      param[resource] << action
+    end
+  end
 end

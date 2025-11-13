@@ -27,11 +27,11 @@ module Pagination
   end
 
   def page_limit
-    @page_limit ||= [page_params.fetch(:per, 10).to_i, 1].max
+    @page_limit ||= [ page_params.fetch(:per, 10).to_i, 1 ].max
   end
 
   def page_number
-    @page_number ||= [page_params.fetch(:no, 1).to_i, 1].max
+    @page_number ||= [ page_params.fetch(:no, 1).to_i, 1 ].max
   end
 
   def page_offset

@@ -26,8 +26,8 @@
           <% action = permission["action"] %>
 
           <div class="form-check">
-            <%= check_box_tag "role[permissions][user_#{index}][#{resource}][#{action}]", true, nil, class: "form-check-input" %>
-            <%= label_tag "role[permissions][user_#{index}][#{resource}][#{action}]", "#{action.titleize} #{resource.titleize}", class: "form-check-label" %>
+            <%= check_box_tag "role[permissions][#{resource}][#{action}]", true, role.permissions.include?(permission), class: "form-check-input" %>
+            <%= label_tag "role[permissions][#{resource}][#{action}]", "#{action.titleize} #{resource.titleize}", class: "form-check-label" %>
           </div>
         <% end %>
       </div>

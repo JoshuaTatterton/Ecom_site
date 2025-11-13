@@ -32,7 +32,7 @@ RSpec.describe "Roles Admin", type: :system do
   end
 
   describe "#create" do
-    scenario "creating a role with no permissions" do
+    scenario "can create a role with no permissions" do
       # Act
       visit new_admin_role_path(Switch.current_account)
 
@@ -49,7 +49,7 @@ RSpec.describe "Roles Admin", type: :system do
       end
     end
 
-    scenario "creating a role with all permissions" do
+    scenario "can create a role with all permissions" do
       # Act
       visit new_admin_role_path(Switch.current_account)
 
@@ -69,9 +69,9 @@ RSpec.describe "Roles Admin", type: :system do
   end
 
   describe "#update" do
-    scenario "updating a role" do
+    scenario "can update a role name, add and remove permissions" do
       # Arrange
-      role = Role.create(name: "AHHHH")
+      role = Role.create(name: "AHHHH", permissions: [{ "resource" => "roles", "action" => "update" }])
 
       # Act
       visit edit_admin_role_path(Switch.current_account, role.id)
@@ -79,7 +79,8 @@ RSpec.describe "Roles Admin", type: :system do
       within("form[action='#{admin_role_path(Switch.current_account, role.id)}']") do
         find("input[name='role[name]']").fill_in(with: "Sweet Role")
         within("#user_permissions") do
-          all("input[type='checkbox']").first.click
+          find("input[name='role[permissions][roles][create]']").click
+          find("input[name='role[permissions][roles][update]']").click
         end
         find("input[type='submit']").click
       end
@@ -88,12 +89,13 @@ RSpec.describe "Roles Admin", type: :system do
       aggregate_failures do
         expect(page).to have_content("Sweet Role")
         expect(role.reload.name).to eq("Sweet Role")
+        expect(role.permissions).to eq([{ "resource" => "roles", "action" => "create" }])
       end
     end
   end
 
   describe "#destroy" do
-    scenario "destroying a role" do
+    scenario "can destroy a role" do
       # Arrange
       role = Role.create(name: "AHHHH")
 
