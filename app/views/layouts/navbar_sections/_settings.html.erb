@@ -1,0 +1,18 @@
+<% if can? :view, Role %>
+  <ul class="navbar-nav">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" id="settings_nav" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <%= render "generic/bootstrap_icon", icon: "gear" %>
+        Settings
+      </a>
+
+      <ul class="dropdown-menu">
+        <% if can? :view, Role %>
+          <li>
+            <%= link_to "Roles", admin_roles_path(Switch.current_account), class: "dropdown-item" %>
+          </li>
+        <% end %>
+      </ul>
+    </li>
+  </ul>
+<% end %>

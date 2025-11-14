@@ -2,15 +2,17 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    if user.role.administrator
-      can :manage, :all
-    else
-      apply_user_role_permissions(user.role)
+    apply_user_cans(user)
 
-      apply_user_cans(user)
+    if Switch.current_account
+      if user.role.administrator
+        can :manage, :all
+      else
+        apply_user_role_permissions(user.role)
+      end
+
+      apply_global_cannots(user)
     end
-
-    apply_global_cannots(user)
   end
 
   def apply_user_role_permissions(role)
