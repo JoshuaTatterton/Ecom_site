@@ -32,6 +32,12 @@ module UserSession
     end
   end
 
+  def validate_user_account
+    if current_user.role.nil?
+      redirect_to admin_index_path
+    end
+  end
+
   def sign_in_redirect
     if session[:sign_in_redirect]
       # Redirect back if possible
