@@ -82,6 +82,48 @@ RSpec.describe "Admin", type: :system, signed_out: true do
       end
     end
 
+    context "with access to 1 account" do
+      scenario "nav contains link to the account page" do
+        # Arrange
+        role = Role.first
+        user = role.users.create(email: "wot@umean.com")
+        page.set_rack_session(user_id: user.id)
+
+        # Act
+        visit admin_path(Switch.current_account)
+
+        # Assert
+        aggregate_failures do
+          within(".navbar") do
+            expect(page).to have_selector("a[href='#{admin_path(Switch.current_account)}']")
+            expect(page).not_to have_selector("a[href='#{admin_path("secondary")}']")
+          end
+        end
+      end
+    end
+
+    context "with access to 2 or more accounts" do
+      scenario "nav contains link to the other account", js: true do
+        # Arrange
+        user = User.first
+        page.set_rack_session(user_id: user.id)
+
+        # Act
+        visit admin_path(Switch.current_account)
+
+        within(".navbar") do
+          find("#account_nav").click
+          find("a[href='#{admin_path("secondary")}']").click
+        end
+
+        # Assert
+        aggregate_failures do
+          expect(current_path).to eq(admin_path("secondary"))
+          expect(page).to have_content("Secondary Account")
+        end
+      end
+    end
+
     context "while signed out" do
       scenario "redirects to user login" do
         # Act
@@ -118,7 +160,7 @@ RSpec.describe "Admin", type: :system, signed_out: true do
   end
 
   describe "#destroy" do
-    scenario "can sign out" do
+    scenario "can sign out", js: true do
       # Arrange
       user = User.first
       page.set_rack_session(user_id: user.id)
