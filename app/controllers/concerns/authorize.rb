@@ -6,8 +6,9 @@ module Authorize
       around_action :catch_failed_authorize_redirect
     end
   end
-  
-  # Safe version of authorize! which will redirect to a safe location instead of  
+
+  # Safe version of authorize! which in conjunction with :catch_failed_authorize_redirect
+  # will redirect to a safe location instead of just throwing an error
   def authorize(*args)
     unless can?(*args)
       raise AuthorizationError

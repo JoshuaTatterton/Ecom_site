@@ -87,7 +87,7 @@ RSpec.describe "Authorize Admin", type: :system do
       expect(current_path).to eq(admin_roles_path(Switch.current_account))
     end
 
-    scenario "double redirects back to account page without any permissions" do
+    scenario "double redirects back to index then account page without any permissions" do
       # Arrange
       role = Role.create!(name: "no permissions :(", permissions: [])
       user = role.users.create!(email: "no@permissions.com")
@@ -97,7 +97,7 @@ RSpec.describe "Authorize Admin", type: :system do
       visit new_admin_role_path(Switch.current_account)
 
       # Assert
-      expect(current_path).to eq(admin_roles_path(Switch.current_account))
+      expect(current_path).to eq(admin_path(Switch.current_account))
     end
   end
 
