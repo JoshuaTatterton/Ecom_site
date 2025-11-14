@@ -36,9 +36,12 @@
             <td><%= role.updated_at %></td>
             <td>
               <% if role.administrator || current_user.role.id == role.id %>
-                <button type="button" class="btn btn-secondary" disabled>
-                  <%= render "generic/bootstrap_icon", icon: "pencil" %>
-                </button>
+                <span class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                  data-bs-title="<%= role.administrator ? "Cannot edit Admin Roles" : "Cannot edit your own Role" %>">
+                  <button type="button" class="btn btn-secondary" disabled>
+                    <%= render "generic/bootstrap_icon", icon: "pencil" %>
+                  </button>
+                </span>
               <% else %>
                 <%= link_to edit_admin_role_path(Switch.current_account, role.id),
                       class: "link-underline link-underline-opacity-0" do %>
@@ -49,9 +52,12 @@
               <% end %>
 
               <% if role.administrator || role.memberships.any? %>
-                <button type="button" class="btn btn-secondary" disabled>
-                  <%= render "generic/bootstrap_icon", icon: "trash" %>
-                </button>
+                <span class="d-inline-block" data-bs-toggle="tooltip" data-bs-placement="bottom"
+                  data-bs-title="<%= role.administrator ? "Cannot delete Admin Roles" : "Cannot delete in use Roles" %>">
+                  <button type="button" class="btn btn-secondary" disabled>
+                    <%= render "generic/bootstrap_icon", icon: "trash" %>
+                  </button>
+                </span>
               <% else %>
                 <%= link_to admin_role_path(Switch.current_account, role.id),
                   class: "link-underline link-underline-opacity-0",

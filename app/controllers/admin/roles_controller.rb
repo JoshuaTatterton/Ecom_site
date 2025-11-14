@@ -63,7 +63,7 @@ module Admin
     end
 
     def roles
-      @roles ||= base_scope.offset(page_offset).limit(page_limit)
+      @roles ||= base_scope.includes(:memberships).offset(page_offset).limit(page_limit)
     end
 
     def base_scope
