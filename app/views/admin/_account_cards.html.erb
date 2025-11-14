@@ -7,13 +7,13 @@
             <span class="me-auto">
               <%= account.name %>
             </span>
-            <%= image_tag("bootstrap/arrow-up-right.svg", class: "bi bi-arrow-up-right") %>
+            <%= render "generic/bootstrap_icon", icon: "arrow-up-right" %>
           </div>
         <% end %>
 
         <div class="card-body">
           <% Switch.account(account.reference) do %>
-            Role: <%= current_user.role.name %>
+            Role: <%= current_user.reload_role.name %>
           <% end %>
         </div>
       </div>

@@ -1,6 +1,8 @@
 class AdminController < ApplicationController
   include UserSession
 
+  before_action :require_sign_in, only: [ :show ]
+
   def index
   end
 
@@ -9,11 +11,7 @@ class AdminController < ApplicationController
     if user&.authenticate(sign_in_params[:password])
       sign_in(user)
 
-      if request.referer&.end_with?(admin_index_path) && current_user.accounts.count == 1
-        redirect_to admin_path(current_user.accounts.first.reference)
-      else
-        redirect_back_or_to admin_index_path
-      end
+      redirect_to sign_in_redirect
     else
       render :index
     end
