@@ -1,10 +1,10 @@
-<div class="card">
-  <div class="card-header">
-    Sign in
-  </div>
+<%= form_for :user, url: admin_sign_in_path do |f| %>
+  <div class="card">
+    <div class="card-header">
+      Sign in
+    </div>
 
-  <div class="card-body">
-    <%= form_for :user, url: admin_sign_in_path do |f| %>
+    <div class="card-body">
       <div class="row">
         <div class="col">
           <%= f.label :email, "Email address:", class: "form-label" %>
@@ -18,12 +18,10 @@
           <%= f.password_field :password, class: "form-control", "aria-describedby": "passwordHelpBlock" %>
         </div>
       </div>
+    </div>
 
-      <div class="row">
-        <div class="col">
-          <%= f.submit "Sign in", class: "btn btn-primary" %>
-        </div>
-      </div>
-    <% end %>
+    <div class="card-footer">
+      <%= f.submit "Sign in", class: "btn btn-primary" %>
+    </div>
   </div>
-</div>
+<% end %>

@@ -5,13 +5,17 @@ module Admin
     helper_method :roles, :role
 
     def index
+      authorize :view, Role
     end
 
     def new
+      authorize :create, Role
     end
 
     def create
       @role = Role.new(role_params)
+      authorize :create, @role
+
       @role.permissions = PermissionsHelper.serialized_form_permissions(permissions_params)
       if @role.save
         redirect_to action: :index
@@ -22,10 +26,13 @@ module Admin
 
     def edit
       @role = Role.find(params[:id])
+      authorize :update, @role
     end
 
     def update
       @role = Role.find(params[:id])
+      authorize :update, @role
+
       @role.permissions = PermissionsHelper.serialized_form_permissions(permissions_params)
       if role.update(role_params)
         redirect_to action: :index
@@ -36,6 +43,8 @@ module Admin
 
     def destroy
       @role = Role.find(params[:id])
+      authorize :delete, @role
+
       role.destroy
 
       redirect_to action: :index
@@ -54,7 +63,7 @@ module Admin
     end
 
     def roles
-      @roles ||= base_scope.offset(page_offset).limit(page_limit)
+      @roles ||= base_scope.includes(:memberships).offset(page_offset).limit(page_limit)
     end
 
     def base_scope

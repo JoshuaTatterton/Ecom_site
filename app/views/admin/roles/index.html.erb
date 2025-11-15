@@ -4,10 +4,12 @@
       Roles
     </span>
 
-    <%= link_to new_admin_role_path(Switch.current_account) do %>
-      <button type="button" class="btn btn-success">
-        <%= render "generic/bootstrap_icon", icon: "plus-circle" %>
-      </button>
+    <% if can? :create, role %>
+      <%= link_to new_admin_role_path(Switch.current_account) do %>
+        <%= render "generic/buttons/new" %>
+      <% end %>
+    <% else %>
+      <%= render "generic/buttons/new", disabled: true, tooltip: "You do not have permissions to create Roles" %>
     <% end %>
   </div>
 
@@ -35,23 +37,24 @@
             </td>
             <td><%= role.updated_at %></td>
             <td>
-              <% if role.administrator || current_user.role.id == role.id %>
-                <button type="button" class="btn btn-secondary" disabled>
-                  <%= render "generic/bootstrap_icon", icon: "pencil" %>
-                </button>
+              <% if role.administrator %>
+                <%= render "generic/buttons/edit", disabled: true, tooltip: "Cannot edit Admin Roles" %>
+              <% elsif current_user.role.id == role.id %>
+                <%= render "generic/buttons/edit", disabled: true, tooltip: "Cannot edit your own Role" %>
+              <% elsif cannot? :update, role %>
+                <%= render "generic/buttons/edit", disabled: true, tooltip: "You do not have permissions to edit Roles" %>
               <% else %>
-                <%= link_to edit_admin_role_path(Switch.current_account, role.id),
-                      class: "link-underline link-underline-opacity-0" do %>
-                  <button type="button" class="btn btn-primary">
-                    <%= render "generic/bootstrap_icon", icon: "pencil" %>
-                  </button>
+                <%= link_to edit_admin_role_path(Switch.current_account, role.id), class: "link-underline link-underline-opacity-0" do %>
+                  <%= render "generic/buttons/edit" %>
                 <% end %>
               <% end %>
 
-              <% if role.administrator || role.memberships.any? %>
-                <button type="button" class="btn btn-secondary" disabled>
-                  <%= render "generic/bootstrap_icon", icon: "trash" %>
-                </button>
+              <% if role.administrator %>
+                <%= render "generic/buttons/delete", disabled: true, tooltip: "Cannot delete Admin Roles" %>
+              <% elsif role.memberships.any? %>
+                <%= render "generic/buttons/delete", disabled: true, tooltip: "Cannot delete in use Roles" %>
+              <% elsif cannot? :delete, role %>
+                <%= render "generic/buttons/delete", disabled: true, tooltip: "You do not have permissions to delete Roles" %>
               <% else %>
                 <%= link_to admin_role_path(Switch.current_account, role.id),
                   class: "link-underline link-underline-opacity-0",
@@ -60,9 +63,7 @@
                     turbo_confirm: "Are you sure you want to delete Role: #{role.name}?"
                   } do
                 %>
-                  <button type="button" class="btn btn-danger">
-                    <%= render "generic/bootstrap_icon", icon: "trash" %>
-                  </button>
+                  <%= render "generic/buttons/delete" %>
                 <% end %>
               <% end %>
             </td>

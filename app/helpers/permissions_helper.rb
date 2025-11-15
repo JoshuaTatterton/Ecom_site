@@ -5,6 +5,10 @@ module PermissionsHelper
   ]
   ALL_PERMISSIONS = USER_PERMISSIONS
 
+  RESOURCE_MAP = {
+    "roles" => Role
+  }
+
   # Map permissions into PERMISSIONS format each param should look like:
   # { resource: { action_1: "true", action_2: "true", ... }, ... }
   def self.serialized_form_permissions(permission_params)

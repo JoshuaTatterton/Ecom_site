@@ -1,0 +1,16 @@
+<div class="d-flex">
+  <ul class="navbar-nav me-auto my-2 my-lg-0" style="--bs-scroll-height: 100px;">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" id="user_nav" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <%= current_user.email %>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">Edit</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li>
+          <%= link_to "Sign out", admin_sign_out_path, data: { turbo_method: :delete }, class: "dropdown-item" %>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
