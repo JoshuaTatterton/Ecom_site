@@ -16,5 +16,6 @@ Rails.application.routes.draw do
   delete "admin/sign_out", to: "admin#destroy"
   resources :admin, param: :account_reference, only: [ :index, :show ] do
     resources :roles, controller: "admin/roles", except: [ :show ]
+    resources :users, controller: "admin/users", only: [ :index ]
   end
 end
