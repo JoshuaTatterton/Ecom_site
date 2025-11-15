@@ -118,8 +118,8 @@ RSpec.describe "Admin", type: :system, signed_out: true do
 
         # Assert
         aggregate_failures do
-          expect(current_path).to eq(admin_path("secondary"))
           expect(page).to have_content("Secondary Account")
+          expect(current_path).to eq(admin_path("secondary"))
         end
       end
     end
