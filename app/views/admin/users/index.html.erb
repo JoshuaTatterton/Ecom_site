@@ -4,12 +4,12 @@
       Users
     </span>
 
-    <% if can? :create, Membership %>
-      <%#= link_to new_admin_role_path(Switch.current_account) do %>
-        <%#= render "generic/buttons/new" %>
-      <%# end %>
+    <% if can? :add, Membership %>
+      <%= link_to new_admin_user_path(Switch.current_account) do %>
+        <%= render "generic/buttons/new" %>
+      <% end %>
     <% else %>
-      <%#= render "generic/buttons/new", disabled: true, tooltip: "You do not have permissions to create Roles" %>
+      <%= render "generic/buttons/new", disabled: true, tooltip: "You do not have permissions to add Users" %>
     <% end %>
   </div>
 

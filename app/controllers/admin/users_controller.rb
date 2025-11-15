@@ -2,27 +2,29 @@ module Admin
   class UsersController < ApplicationController
     include Pagination
 
-    helper_method :memberships, :user
+    helper_method :memberships, :user, :role, :roles_scope
 
     def index
       authorize :view, Membership
     end
 
-    # def new
-    #   authorize :create, Role
-    # end
+    def new
+      authorize :add, Membership
+    end
 
-    # def create
-    #   @role = Role.new(role_params)
-    #   authorize :create, @role
+    def create
+      @role = Role.find(user_params[:role])
+      @user = User.find_or_initialize_by(email: user_params[:email])
+      @membership = @role.memberships.new(user: @user)
 
-    #   @role.permissions = PermissionsHelper.serialized_form_permissions(permissions_params)
-    #   if @role.save
-    #     redirect_to action: :index
-    #   else
-    #     render :new
-    #   end
-    # end
+      authorize :add, @membership
+
+      if @membership.save
+        redirect_to action: :index
+      else
+        render :new
+      end
+    end
 
     # def edit
     #   @role = Role.find(params[:id])
@@ -52,10 +54,10 @@ module Admin
 
     private
 
-    # def user_params
-    #   # SecureRandom.uuid
-    #   params.require(:user).permit(:email)
-    # end
+    def user_params
+      # SecureRandom.uuid
+      @user_params ||= params.require(:user).permit(:email, :role)
+    end
 
     # def permissions_params
     #   # Default to {} incase all permissions are false so would be empty
@@ -71,8 +73,16 @@ module Admin
       Membership.order(id: :desc)
     end
 
-    # def user
-    #   @user ||= User.new
-    # end
+    def user
+      @user ||= User.new
+    end
+
+    def role
+      @role ||= Role.new
+    end
+
+    def roles_scope
+      admin_user? ? Role.order(:name) : Role.where(administrator: false).order(:name)
+    end
   end
 end

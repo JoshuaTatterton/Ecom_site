@@ -31,47 +31,177 @@ RSpec.describe "Users Admin", type: :system do
             # expect(page).not_to have_selector("a[href='#{delete_path}'][data-turbo-method='delete']")
           end
         end
-        # expect(page).to have_selector("a[href='#{new_admin_user_path("primary")}']")
+        expect(page).to have_selector("a[href='#{new_admin_user_path(Switch.current_account)}']")
       end
     end
   end
 
-  # describe "#create" do
-  #   scenario "can create a role with no permissions" do
-  #     # Act
-  #     visit new_admin_role_path(Switch.current_account)
+  describe "#create" do
+    context "when email doesn't match an existing user" do
+      scenario "can create a new user and membership" do
+        # Arrange
+        role = Role.create(name: "Sweet Role")
 
-  #     within("form[action='#{admin_roles_path(Switch.current_account)}']") do
-  #       find("input[name='role[name]']").fill_in(with: "Sweet Role")
-  #       find("input[type='submit']").click
-  #     end
+        # Act
+        visit new_admin_user_path(Switch.current_account)
 
-  #     # Assert
-  #     aggregate_failures do
-  #       expect(page).to have_content("Sweet Role")
-  #       created_role = Role.find_by(name: "Sweet Role")
-  #       expect(created_role.permissions).to eq([])
-  #     end
-  #   end
+        within("form[action='#{admin_users_path(Switch.current_account)}']") do
+          find("input[name='user[email]']").fill_in(with: "new@user.com")
+          find("select[name='user[role]']").select(role.name)
 
-  #   scenario "can create a role with all permissions" do
-  #     # Act
-  #     visit new_admin_role_path(Switch.current_account)
+          find("input[type='submit']").click
+        end
 
-  #     within("form[action='#{admin_roles_path(Switch.current_account)}']") do
-  #       find("input[name='role[name]']").fill_in(with: "Sweet Role")
-  #       all("input[type='checkbox']").each(&:click)
-  #       find("input[type='submit']").click
-  #     end
+        # Assert
+        aggregate_failures do
+          expect(page).to have_content("new@user.com")
+          expect(role.users.count).to eq(1)
+          new_user = role.users.first
+          expect(new_user.email).to eq("new@user.com")
+          expect(new_user.awaiting_authentication).to eq(true)
+        end
+      end
+    end
 
-  #     # Assert
-  #     aggregate_failures do
-  #       expect(page).to have_content("Sweet Role")
-  #       created_role = Role.find_by(name: "Sweet Role")
-  #       expect(created_role.permissions).to eq(PermissionsHelper::ALL_PERMISSIONS)
-  #     end
-  #   end
-  # end
+    context "when user already exists" do
+      context "with a membership in another account" do
+        scenario "can create a membership for the current account" do
+          # Arrange
+          role = Role.create(name: "Sweet Role")
+          existing_user = nil
+          Switch.account("secondary") {
+            existing_user = Role.first.users.create(email: "new@user.com")
+          }
+
+          # Act
+          visit new_admin_user_path(Switch.current_account)
+
+          within("form[action='#{admin_users_path(Switch.current_account)}']") do
+            find("input[name='user[email]']").fill_in(with: existing_user.email)
+            find("select[name='user[role]']").select(role.name)
+
+            find("input[type='submit']").click
+          end
+
+          # Assert
+          aggregate_failures do
+            expect(page).to have_content("new@user.com")
+            expect(role.users.count).to eq(1)
+            expect(role.users.first).to eq(existing_user)
+          end
+        end
+      end
+
+      context "with a membership in the current account" do
+        scenario "does not create another user/membership" do
+          # Arrange
+          role = Role.create(name: "Sweet Role")
+          existing_role = Role.create(name: "Existing")
+          existing_user = existing_role.users.create(email: "new@user.com")
+
+          # Act
+          visit new_admin_user_path(Switch.current_account)
+
+          within("form[action='#{admin_users_path(Switch.current_account)}']") do
+            find("input[name='user[email]']").fill_in(with: existing_user.email)
+            find("select[name='user[role]']").select(role.name)
+
+            find("input[type='submit']").click
+          end
+
+          # Assert
+          aggregate_failures do
+            # email kept in field not rendered on page
+            expect(page).not_to have_content("new@user.com")
+            expect(find("input[name='user[email]']").value).to eq(existing_user.email)
+            expect(role.users.count).to eq(0)
+          end
+        end
+      end
+    end
+
+    context "when creating a user as an administrator" do
+      scenario "can create a user with the administrator role" do
+        # Arrange
+        admin_role = Role.create(name: "Sweet Admin Role", administrator: true)
+
+        # Act
+        visit new_admin_user_path(Switch.current_account)
+
+        within("form[action='#{admin_users_path(Switch.current_account)}']") do
+          find("input[name='user[email]']").fill_in(with: "new@user.com")
+          find("select[name='user[role]']").select(admin_role.name)
+
+          find("input[type='submit']").click
+        end
+
+        # Assert
+        aggregate_failures do
+          expect(page).to have_content("new@user.com")
+          expect(admin_role.users.count).to eq(1)
+          new_user = admin_role.users.first
+          expect(new_user.email).to eq("new@user.com")
+          expect(new_user.awaiting_authentication).to eq(true)
+        end
+      end
+    end
+
+    context "when creating a user as a non administrator" do
+      scenario "no administrator roles appear in the select" do
+        # Arrange
+        non_admin_role = Role.create(name: "Non-Admin", permissions: [
+          { resource: "users", action: "add" }, { resource: "users", action: "view" }
+        ])
+        non_admin_user = non_admin_role.users.create(email: "nonadmin@user.com")
+        page.set_rack_session(user_id: non_admin_user.id)
+
+        admin_role = Role.create(name: "Sweet Admin Role", administrator: true)
+
+        # Act
+        visit new_admin_user_path(Switch.current_account)
+
+        # Assert
+        aggregate_failures do
+          within("form[action='#{admin_users_path(Switch.current_account)}']") do
+            within("select[name='user[role]']") do
+              expect(all("option").count).to eq 2
+              expect(all("option")[0]).to have_content("- Select -")
+              expect(all("option")[1]).to have_content(non_admin_role.name)
+            end
+          end
+        end
+      end
+
+      scenario "cannot create a user with the administrator role" do
+        # Arrange
+        non_admin_role = Role.create(name: "Non-Admin", permissions: [
+          { resource: "users", action: "add" }, { resource: "users", action: "view" }
+        ])
+        non_admin_user = non_admin_role.users.create(email: "nonadmin@user.com")
+        page.set_rack_session(user_id: non_admin_user.id)
+
+        admin_role = Role.create(name: "Sweet Admin Role", administrator: true)
+
+        # Act
+        # Using driver submit to test malicious behaviour
+        page.driver.submit :post, admin_users_path(Switch.current_account), {
+          user: {
+            role: admin_role.id,
+            email: "new@user.com"
+          }
+        }
+
+        # Assert
+        aggregate_failures do
+          expect(current_path).to eq(admin_users_path(Switch.current_account))
+          expect(page).not_to have_content("new@user.com")
+
+          expect(User.find_by(email: "new@user.com")).to be_nil
+          expect(admin_role.users.count).to eq(0)
+        end
+      end
+    end
+  end
 
   # describe "#update" do
   #   scenario "can update a role name, add and remove permissions" do
