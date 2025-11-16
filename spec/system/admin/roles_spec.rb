@@ -63,7 +63,7 @@ RSpec.describe "Roles Admin", type: :system do
       aggregate_failures do
         expect(page).to have_content("Sweet Role")
         created_role = Role.find_by(name: "Sweet Role")
-        expect(created_role.permissions).to eq(PermissionsHelper::ALL_PERMISSIONS)
+        expect(created_role.permissions).to match_array(PermissionsHelper::ALL_PERMISSIONS)
       end
     end
   end

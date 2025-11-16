@@ -13,8 +13,8 @@ module Admin
     end
 
     def create
-      @role = Role.find(user_params[:role])
-      @user = User.find_or_initialize_by(email: user_params[:email])
+      @role = Role.find(role_id)
+      @user = User.find_or_initialize_by(email: user_email)
       @membership = @role.memberships.new(user: @user)
 
       authorize :add, @membership
@@ -54,9 +54,13 @@ module Admin
 
     private
 
-    def user_params
+    def user_email
       # SecureRandom.uuid
-      @user_params ||= params.require(:user).permit(:email, :role)
+      params.require(:user).permit(:email).fetch(:email)
+    end
+
+    def role_id
+      params.require(:user).permit(:role).fetch(:role)
     end
 
     # def permissions_params
