@@ -6,9 +6,33 @@ services:
       - "3000:3000"
     depends_on:
       - db
+      - redis
+      - workers
     env_file: ".env"
     environment:
       DATABASE_HOST: "db"
+      REDIS_URL: "redis://redis:6379/0"
+      BUNDLE_PATH: "/usr/local/bundle"
+    volumes:
+      - gem_cache:/usr/local/bundle
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /rails
+  workers:
+    build: .
+    command: bundle exec sidekiq
+    depends_on:
+      - db
+      - redis
+    env_file: ".env"
+    environment:
+      DATABASE_HOST: "db"
+      REDIS_URL: "redis://redis:6379/0"
+      BUNDLE_PATH: "/usr/local/bundle"
+    volumes:
+      - gem_cache:/usr/local/bundle
     develop:
       watch:
         - action: sync
@@ -24,6 +48,16 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+  redis:
+    image: redis:8.4-rc1-alpine
+    command: redis-server --loglevel warning
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
 volumes:
   postgres_data:
+  redis_data:
+  gem_cache:
