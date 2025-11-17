@@ -32,8 +32,8 @@
 
       <div class="collapse row" id="administrator_warning">
         <div class="col">
-          <div class="col alert alert-danger" role="alert">
-            <%= render "generic/bootstrap_icon", icon: "info-circle", type: "danger" %>
+          <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <%= render "generic/bootstrap_icon", icon: "info-circle", type: "danger", classes: "flex-shrink-0 me-2" %>
             Caution! After assigning an administrator Role to a User it cannot be changed.
           </div>
         </div>
