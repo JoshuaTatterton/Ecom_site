@@ -49,31 +49,25 @@ module Admin
       end
     end
 
-    # def destroy
-    #   @role = Role.find(params[:id])
-    #   authorize :delete, @role
+    def destroy
+      @membership = Membership.find(params[:id])
 
-    #   role.destroy
+      authorize :remove, @membership
 
-    #   redirect_to action: :index
-    # end
+      @membership.destroy
+
+      redirect_to action: :index
+    end
 
     private
 
     def user_email
-      # SecureRandom.uuid
       params.require(:user).permit(:email).fetch(:email)
     end
 
     def role_id
       params.require(:user).permit(:role).fetch(:role)
     end
-
-    # def permissions_params
-    #   # Default to {} incase all permissions are false so would be empty
-    #   parameters = params.require(:role).permit(permissions: PermissionsHelper.permitted_params) || {}
-    #   parameters.fetch(:permissions, {})
-    # end
 
     def memberships
       @memberships ||= base_scope.includes(:user, :role).offset(page_offset).limit(page_limit)

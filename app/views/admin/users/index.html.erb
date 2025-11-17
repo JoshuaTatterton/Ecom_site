@@ -38,14 +38,30 @@
               <% elsif membership.role.administrator %>
                 <%= render "generic/buttons/edit", disabled: true, tooltip: "Cannot edit Admin Users" %>
               <% elsif cannot? :update, membership %>
-                <%= render "generic/buttons/edit", disabled: true, tooltip: "You do not have permissions to edit Users" %>
+                <%= render "generic/buttons/edit", disabled: true, tooltip: "You do not have permissions to edit User" %>
               <% else %>
                 <%= link_to edit_admin_user_path(Switch.current_account, membership.id), class: "link-underline link-underline-opacity-0" do %>
                   <%= render "generic/buttons/edit" %>
                 <% end %>
               <% end %>
 
-              <%= render "generic/buttons/delete", disabled: true, tooltip: "You do not have permissions to delete Users" %>
+              <% if current_user.membership.id == membership.id %>
+                <%= render "generic/buttons/delete", disabled: true, tooltip: "Cannot remove yourself" %>
+              <% elsif membership.role.administrator %>
+                <%= render "generic/buttons/delete", disabled: true, tooltip: "Cannot remove Admin Users" %>
+              <% elsif cannot? :remove, membership %>
+                <%= render "generic/buttons/delete", disabled: true, tooltip: "You do not have permissions to remove User" %>
+              <% else %>
+                <%= link_to admin_user_path(Switch.current_account, membership.id),
+                  class: "link-underline link-underline-opacity-0",
+                  data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Are you sure you want to remove User: #{membership.user.email}?"
+                  } do
+                %>
+                  <%= render "generic/buttons/delete" %>
+                <% end %>
+              <% end %>
             </td>
           </tr>
         <% end %>

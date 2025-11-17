@@ -48,6 +48,6 @@ class Ability
     # Cannot change their own role
     cannot :update, user.membership
     # Cannot remove themselves from an account
-    cannot :delete, user.membership
+    cannot :remove, user.membership
   end
 end

@@ -245,25 +245,71 @@ RSpec.describe "Users Admin", type: :system do
         expect(page).to have_content("Caution! After assigning an administrator Role to a User it cannot be changed.")
       end
     end
+
+    scenario "users cannot swap their own roles" do
+      # Arrange
+      user = User.first
+      old_role = user.role
+
+      new_role = Role.create(name: "New Role", permissions: [])
+
+      # Act
+      # Using driver submit to test malicious behaviour
+      page.driver.submit :patch, admin_user_path(Switch.current_account, user.membership), {
+        user: {
+          role: new_role.id
+        }
+      }
+
+      # Assert
+      aggregate_failures do
+        expect(current_path).to eq(admin_users_path(Switch.current_account))
+        expect(page).not_to have_content("New Role")
+
+        expect(user.reload_membership.role).to eq(old_role)
+        expect(user.reload_membership.role).not_to eq(new_role)
+      end
+    end
   end
 
-  # describe "#destroy" do
-  #   scenario "can destroy a role" do
-  #     # Arrange
-  #     role = Role.create(name: "AHHHH")
+  describe "#destroy" do
+    scenario "can remove a user from an account, without destroying the user" do
+      # Arrange
+      role = Role.create(name: "Sweet Role")
+      user = role.users.create(email: "test@user.com")
+      membership = user.membership
 
-  #     visit admin_roles_path(Switch.current_account)
+      visit admin_users_path(Switch.current_account)
 
-  #     # Act
-  #     within("tr#role_#{role.id}") do
-  #       find("a[href='#{admin_role_path(Switch.current_account, role.id)}']").click
-  #     end
+      # Act
+      within("tr#user_#{membership.id}") do
+        find("a[href='#{admin_user_path(Switch.current_account, membership.id)}']").click
+      end
 
-  #     # Assert
-  #     aggregate_failures do
-  #       expect(page).not_to have_content(role.name)
-  #       expect(Role.find_by(id: role.id)).to eq(nil)
-  #     end
-  #   end
-  # end
+      # Assert
+      aggregate_failures do
+        expect(current_path).to eq(admin_users_path(Switch.current_account))
+        expect(page).not_to have_content(user.email)
+        expect(user.reload.membership).to eq(nil)
+        expect(user.role).to eq(nil)
+      end
+    end
+
+    scenario "cannot remove your own User from the account" do
+      # Arrange
+      user = User.first
+      membership = user.membership
+
+      # Act
+      # Using driver submit to test malicious behaviour
+      page.driver.submit :delete, admin_user_path(Switch.current_account, user.membership), {}
+
+      # Assert
+      aggregate_failures do
+        expect(current_path).to eq(admin_users_path(Switch.current_account))
+        expect(page).to have_content(user.email)
+        expect(user.reload.membership).to eq(membership)
+      end
+    end
+  end
 end
