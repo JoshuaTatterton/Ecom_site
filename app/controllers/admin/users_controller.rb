@@ -2,7 +2,7 @@ module Admin
   class UsersController < ApplicationController
     include Pagination
 
-    helper_method :memberships, :user, :role, :roles_scope
+    helper_method :memberships, :membership, :user, :role, :roles_scope
 
     def index
       authorize :view, Membership
@@ -26,22 +26,28 @@ module Admin
       end
     end
 
-    # def edit
-    #   @role = Role.find(params[:id])
-    #   authorize :update, @role
-    # end
+    def edit
+      @membership = Membership.find(params[:id])
 
-    # def update
-    #   @role = Role.find(params[:id])
-    #   authorize :update, @role
+      authorize :update, @membership
+    end
 
-    #   @role.permissions = PermissionsHelper.serialized_form_permissions(permissions_params)
-    #   if role.update(role_params)
-    #     redirect_to action: :index
-    #   else
-    #     render :edit
-    #   end
-    # end
+    def update
+      @membership = Membership.find(params[:id])
+
+      authorize :update, @membership
+
+      @role = Role.find(role_id)
+      @membership.role = @role
+
+      authorize :update, @membership
+
+      if @membership.save
+        redirect_to action: :index
+      else
+        render :edit
+      end
+    end
 
     # def destroy
     #   @role = Role.find(params[:id])
@@ -75,6 +81,10 @@ module Admin
 
     def base_scope
       Membership.order(id: :desc)
+    end
+
+    def membership
+      @membership ||= Membership.new
     end
 
     def user

@@ -203,31 +203,49 @@ RSpec.describe "Users Admin", type: :system do
     end
   end
 
-  # describe "#update" do
-  #   scenario "can update a role name, add and remove permissions" do
-  #     # Arrange
-  #     role = Role.create(name: "AHHHH", permissions: [ { "resource" => "roles", "action" => "update" } ])
+  describe "#update" do
+    scenario "can update a user's role" do
+      # Arrange
+      role = Role.create(name: "Old Role", permissions: [])
+      user = role.users.create(email: "some@user.com")
 
-  #     # Act
-  #     visit edit_admin_role_path(Switch.current_account, role.id)
+      new_role = Role.create(name: "New Role", permissions: [])
 
-  #     within("form[action='#{admin_role_path(Switch.current_account, role.id)}']") do
-  #       find("input[name='role[name]']").fill_in(with: "Sweet Role")
-  #       within("#user_permissions") do
-  #         find("input[name='role[permissions][roles][create]']").click
-  #         find("input[name='role[permissions][roles][update]']").click
-  #       end
-  #       find("input[type='submit']").click
-  #     end
+      # Act
+      visit edit_admin_user_path(Switch.current_account, user.membership)
 
-  #     # Assert
-  #     aggregate_failures do
-  #       expect(page).to have_content("Sweet Role")
-  #       expect(role.reload.name).to eq("Sweet Role")
-  #       expect(role.permissions).to eq([ { "resource" => "roles", "action" => "create" } ])
-  #     end
-  #   end
-  # end
+      within("form[action='#{admin_user_path(Switch.current_account, user.membership)}']") do
+        find("select[name='user[role]']").select(new_role.name)
+
+        find("input[type='submit']").click
+      end
+
+      # Assert
+      aggregate_failures do
+        expect(page).not_to have_content("Old Role")
+        expect(page).to have_content("New Role")
+
+        expect(user.reload_membership.role).to eq(new_role)
+      end
+    end
+
+    scenario "displays a warning when trying to assign an admin role", js: true do
+      # Arrange
+      role = Role.create(name: "Old Role", permissions: [])
+      user = role.users.create(email: "some@user.com")
+
+      visit edit_admin_user_path(Switch.current_account, user.membership)
+
+      # Act & Assert
+      within("form[action='#{admin_user_path(Switch.current_account, user.membership)}']") do
+        expect(page).not_to have_content("Caution! After assigning an administrator Role to a User it cannot be changed.")
+
+        find("select[name='user[role]']").select("Admin")
+
+        expect(page).to have_content("Caution! After assigning an administrator Role to a User it cannot be changed.")
+      end
+    end
+  end
 
   # describe "#destroy" do
   #   scenario "can destroy a role" do

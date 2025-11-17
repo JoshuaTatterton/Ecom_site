@@ -33,7 +33,18 @@
             <td><%= membership.role.name %></td>
             <td><%= membership.updated_at %></td>
             <td>
-              <%= render "generic/buttons/edit", disabled: true, tooltip: "You do not have permissions to edit Users" %>
+              <% if current_user.membership.id == membership.id %>
+                <%= render "generic/buttons/edit", disabled: true, tooltip: "Cannot edit yourself" %>
+              <% elsif membership.role.administrator %>
+                <%= render "generic/buttons/edit", disabled: true, tooltip: "Cannot edit Admin Users" %>
+              <% elsif cannot? :update, membership %>
+                <%= render "generic/buttons/edit", disabled: true, tooltip: "You do not have permissions to edit Users" %>
+              <% else %>
+                <%= link_to edit_admin_user_path(Switch.current_account, membership.id), class: "link-underline link-underline-opacity-0" do %>
+                  <%= render "generic/buttons/edit" %>
+                <% end %>
+              <% end %>
+
               <%= render "generic/buttons/delete", disabled: true, tooltip: "You do not have permissions to delete Users" %>
             </td>
           </tr>

@@ -4,12 +4,12 @@
       <%= link_to "Users", admin_users_path(Switch.current_account) %>
     </li>
     <li class="breadcrumb-item active" aria-current="page">
-      New
+      <%= membership.user.email %>
     </li>
   </ol>
 </nav>
 
-<%= form_for :user, url: admin_users_path(Switch.current_account) do |f| %>
+<%= form_for :user, url: admin_user_path(Switch.current_account, membership), method: :patch do |f| %>
   <div class="card mb-3">
     <div class="card-header">
       User:
@@ -17,25 +17,22 @@
 
     <div class="card-body">
       <div class="row mb-3">
-        <div class="col-lg-6">
-          <%= f.label :email, "Email:", class: "form-label" %>
-          <%= f.text_field :email, class: "form-control", required: true, value: user.email %>
-        </div>
-
-        <div class="col-lg-6">
-          <%= f.label :role, "Role:", class: "form-label" %>
+        <div class="col">
+          <%= f.label :role, class: "form-label" do %>
+            Role:
+          <% end %>
           <%= f.select :role,
             roles_scope.map { |role|
               [ role.name, role.id, { "data-bs-target": role.administrator ? "#administrator_warning" : nil } ]
             },
-            { selected: role.id, include_blank: "- Select -", required: true },
+            { selected: membership.role.id, include_blank: "- Select -", required: true },
             { class: "form-select", "data-bs-toggle": "collapse" } %>
         </div>
       </div>
 
       <div class="collapse row" id="administrator_warning">
         <div class="col">
-          <div class="col alert alert-danger d-flex align-items-center" role="alert">
+          <div class="col alert alert-danger" role="alert">
             <%= render "generic/bootstrap_icon", icon: "info-circle", type: "danger" %>
             Caution! After assigning an administrator Role to a User it cannot be changed.
           </div>
@@ -44,7 +41,7 @@
     </div>
 
     <div class="card-footer">
-      <%= f.submit "Add", class: "btn btn-success" %>
+      <%= f.submit "Update", class: "btn btn-success" %>
     </div>
   </div>
 <% end %>
