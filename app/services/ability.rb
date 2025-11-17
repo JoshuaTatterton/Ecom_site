@@ -9,10 +9,17 @@ class Ability
         can :manage, :all
       else
         apply_user_role_permissions(user.role)
+
+        apply_non_administrator_cannots
       end
 
       apply_global_cannots(user)
     end
+  end
+
+  def apply_user_cans(user)
+    # User can update themselves
+    can :update, user
   end
 
   def apply_user_role_permissions(role)
@@ -29,17 +36,18 @@ class Ability
     end
   end
 
-  def apply_user_cans(user)
-    # User can update themselves
-    can "update", user
+  def apply_non_administrator_cannots
+    cannot :add, Membership, role: { administrator: true }
+    cannot :update, Membership, role: { administrator: true }
+    cannot :remove, Membership, role: { administrator: true }
   end
 
   def apply_global_cannots(user)
     # Cannot update their own role
-    cannot "update", user.role
+    cannot :update, user.role
     # Cannot change their own role
-    cannot "update", user.membership
+    cannot :update, user.membership
     # Cannot remove themselves from an account
-    cannot "delete", user.membership
+    cannot :remove, user.membership
   end
 end

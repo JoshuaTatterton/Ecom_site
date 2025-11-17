@@ -147,10 +147,10 @@ RSpec.describe "Authorize Admin", type: :system do
       visit_role = Role.create(name: "Visit Role", permissions: [])
 
       # Act
-      visit edit_admin_role_path(Switch.current_account, role)
+      visit edit_admin_role_path(Switch.current_account, visit_role)
 
       # Assert
-      expect(current_path).to eq(edit_admin_role_path(Switch.current_account, role))
+      expect(current_path).to eq(edit_admin_role_path(Switch.current_account, visit_role))
     end
 
     scenario "redirects back to index page without permissions" do

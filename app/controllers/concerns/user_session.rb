@@ -25,6 +25,10 @@ module UserSession
     @current_user ||= signed_in? && User.includes(:accounts).find(session[:user_id])
   end
 
+  def admin_user?
+    current_user.role.administrator?
+  end
+
   def require_sign_in
     if !signed_in?
       session[:sign_in_redirect] = request.fullpath

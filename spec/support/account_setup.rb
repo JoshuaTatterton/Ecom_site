@@ -8,7 +8,12 @@ RSpec.configure do |config|
       user = nil
       Switch.account(account_1.reference) {
         role = Role.create!(name: "Admin", administrator: true)
-        user = role.users.create!(email: "example@email.com", password: "randomlettersandnumbers")
+        user = role.users.create!(
+          name: "Example User",
+          email: "example@email.com",
+          password: "randomlettersandnumbers",
+          awaiting_authentication: false
+        )
       }
       account_2 = Account.create!(reference: "secondary", name: "Secondary Account")
       AccountSetting.create!(account: account_2)

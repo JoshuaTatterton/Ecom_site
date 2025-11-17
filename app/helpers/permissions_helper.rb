@@ -1,12 +1,16 @@
 module PermissionsHelper
   USER_PERMISSIONS = [
+    { "resource" => "users", "action" => "view" }, { "resource" => "users", "action" => "add" },
+    { "resource" => "user_roles", "action" => "update" }, { "resource" => "users", "action" => "remove" },
     { "resource" => "roles", "action" => "view" }, { "resource" => "roles", "action" => "create" },
     { "resource" => "roles", "action" => "update" }, { "resource" => "roles", "action" => "delete" }
   ]
   ALL_PERMISSIONS = USER_PERMISSIONS
 
   RESOURCE_MAP = {
-    "roles" => Role
+    "roles" => Role,
+    "users" => Membership,
+    "user_roles" => Membership
   }
 
   # Map permissions into PERMISSIONS format each param should look like:
