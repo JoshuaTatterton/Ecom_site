@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_one :role, through: :membership
 
   has_secure_password
+  has_secure_password :authentication_password, validations: false, reset_token: { expires_in: 1.week }
   has_secure_password :recovery_password, validations: false
 
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP, allow_blank: true }
