@@ -15,8 +15,12 @@ Rails.application.routes.draw do
   # root "posts#index"
   mount Sidekiq::Web => "/sidekiq" # mount Sidekiq::Web in your Rails app
 
-  post "admin/sign_in", to: "admin#create"
-  delete "admin/sign_out", to: "admin#destroy"
+  namespace :admin do
+    post :sign_in, to: "admin#create"
+    delete :sign_out, to: "admin#destroy"
+    get "user/sign_up"
+  end
+
   resources :admin, param: :account_reference, only: [ :index, :show ] do
     resources :roles, controller: "admin/roles", except: [ :show ]
     resources :users, controller: "admin/users", except: [ :show ]
