@@ -56,6 +56,10 @@ services:
       - "6379:6379"
     volumes:
       - redis_data:/data
+  maildev:
+    image: djfarrelly/maildev
+    ports:
+      - "1080:80"
 
 volumes:
   postgres_data:
