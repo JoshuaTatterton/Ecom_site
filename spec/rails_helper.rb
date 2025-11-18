@@ -11,8 +11,12 @@ require "rspec/rails"
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require "capybara/rspec"
+Capybara.javascript_driver = :selenium_headless
 
 require "rack_session_access/capybara"
+
+require 'sidekiq/testing'
+Sidekiq::Testing.fake!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -38,8 +42,6 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
-
-Capybara.javascript_driver = :selenium_headless
 
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures

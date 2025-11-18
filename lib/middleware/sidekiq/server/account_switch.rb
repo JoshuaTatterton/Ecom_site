@@ -14,6 +14,7 @@ module Middleware
         # @return [Void]
         def call(job_instance, job_payload, queue)
           Rails.logger.info "AccountReference: #{job_payload["account_reference"].inspect} derived from job"
+
           Switch.account(job_payload["account_reference"]) {
             yield
           }

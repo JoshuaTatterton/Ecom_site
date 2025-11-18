@@ -18,8 +18,8 @@ module Middleware
         # @yield the next middleware in the chain or the enqueuing of the job
         def call(job_class_or_string, job, queue, redis_pool)
           job["account_reference"] = Switch.current_account
-          puts job
-          yield job_class_or_string, job, queue, redis_pool
+
+          yield
         end
       end
     end
