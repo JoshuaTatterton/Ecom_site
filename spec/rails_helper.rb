@@ -54,6 +54,9 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = false
 
+  Rails.application.routes.default_url_options = { host: "example.com" }
+  config.include Rails.application.routes.url_helpers
+
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 

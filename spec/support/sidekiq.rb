@@ -1,5 +1,3 @@
-Sidekiq.logger.level = Logger::WARN
-
 RSpec.configure do |config|
   config.around(:each) do |example|
     if example.metadata[:sidekiq] == :inline
