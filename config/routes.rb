@@ -13,7 +13,7 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
-  mount Sidekiq::Web => "/sidekiq" # mount Sidekiq::Web in your Rails app
+  mount Sidekiq::Web => "/sidekiq"
 
   post "admin/sign_in", to: "admin#create"
   delete "admin/sign_out", to: "admin#destroy"
