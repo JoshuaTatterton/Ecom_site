@@ -14,7 +14,7 @@ RSpec.describe UserMailer, type: :mailer do
       aggregate_failures do
         expect(email.to).to eq([ user.email ])
         expect(email.subject).to eq("Complete Your Sign Up")
-        expect(email.body.encoded).to include("Account: #{role.account.name}")
+        expect(email.body.encoded).to include("Account: <strong>#{role.account.name}</strong>")
         expect(email.body.encoded).to include("href=\"#{admin_sign_up_index_url({ token: token })}\"")
       end
     end
