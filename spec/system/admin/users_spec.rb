@@ -61,6 +61,30 @@ RSpec.describe "Users Admin", type: :system do
           expect(new_user.awaiting_authentication).to eq(true)
         end
       end
+
+      scenario "schedules a user notification with a new user created" do
+        # Arrange
+        role = Role.create(name: "Sweet Role")
+
+        visit new_admin_user_path(Switch.current_account)
+
+        # Act
+        within("form[action='#{admin_users_path(Switch.current_account)}']") do
+          find("input[name='user[email]']").fill_in(with: "new@user.com")
+          find("select[name='user[role]']").select(role.name)
+
+          find("input[type='submit']").click
+        end
+
+        # Assert
+        aggregate_failures do
+          expect(page).to have_content("new@user.com")
+          expect(role.users.count).to eq(1)
+
+          new_membership = role.memberships.first
+          expect(UserSignUpJob).to have_enqueued_sidekiq_job(new_membership.id)
+        end
+      end
     end
 
     context "when user already exists" do
@@ -88,6 +112,33 @@ RSpec.describe "Users Admin", type: :system do
             expect(page).to have_content("new@user.com")
             expect(role.users.count).to eq(1)
             expect(role.users.first).to eq(existing_user)
+          end
+        end
+
+        scenario "after create does not schedule a job if the user already existed" do
+          # Arrange
+          role = Role.create(name: "Sweet Role")
+          existing_user = nil
+          Switch.account("secondary") {
+            existing_user = Role.first.users.create(email: "new@user.com")
+          }
+
+          visit new_admin_user_path(Switch.current_account)
+
+          # Act
+          within("form[action='#{admin_users_path(Switch.current_account)}']") do
+            find("input[name='user[email]']").fill_in(with: existing_user.email)
+            find("select[name='user[role]']").select(role.name)
+
+            find("input[type='submit']").click
+          end
+
+          # Assert
+          aggregate_failures do
+            expect(page).to have_content("new@user.com")
+            expect(role.users.first).to eq(existing_user)
+
+            expect(UserSignUpJob).not_to have_enqueued_sidekiq_job
           end
         end
       end

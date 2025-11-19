@@ -17,6 +17,9 @@ gem "stimulus-rails"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 
+gem "redis", "~> 5.4"
+gem "sidekiq", "~> 8.0"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 gem "bcrypt", "~> 3.1.7"
 
@@ -74,6 +77,7 @@ end
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "rspec-rails", "~> 8.0"
+  gem "rspec-sidekiq", "~> 5.2"
   gem "capybara", "~> 3.40"
   gem "selenium-webdriver", "~> 4.8"
   gem "database_cleaner-active_record", "~> 2.2"

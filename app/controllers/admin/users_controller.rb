@@ -20,6 +20,8 @@ module Admin
       authorize :add, @membership
 
       if @membership.save
+        UserSignUpJob.perform_async(@membership.id) if @user.previously_new_record?
+
         redirect_to action: :index
       else
         render :new

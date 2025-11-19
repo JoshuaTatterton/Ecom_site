@@ -1,3 +1,5 @@
+require "sidekiq/web"
+
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -11,9 +13,17 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+  mount Sidekiq::Web => "/sidekiq"
 
   post "admin/sign_in", to: "admin#create"
   delete "admin/sign_out", to: "admin#destroy"
+
+  namespace :admin do
+    scope :user do
+      resources :sign_up, only: [ :index, :create ]
+    end
+  end
+
   resources :admin, param: :account_reference, only: [ :index, :show ] do
     resources :roles, controller: "admin/roles", except: [ :show ]
     resources :users, controller: "admin/users", except: [ :show ]

@@ -11,7 +11,7 @@ Plans:
 
 Features:
   - PIM
-  - CSM
+  - CMS
   - Carts
   - OMS
   - ...
@@ -35,10 +35,18 @@ docker-compose up --watch
 ```
 
 Site available at `localhost:3000`
+Sidekiq admin available at `localhost:3000/sidekiq`
+Email host available at `localhost:1080`
 
 Command line works as usual:
  
 ```bash
 rails c
 rspec
+```
+
+While inside a console you should almost always wrap your actions within the account switching logic
+```ruby
+Switch.account("account_reference") {binding.pry}
+Switch.current_account # => "account_reference"
 ```
