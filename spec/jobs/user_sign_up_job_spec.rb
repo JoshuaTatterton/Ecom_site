@@ -21,9 +21,9 @@ RSpec.describe UserSignUpJob, type: :job do
         # email delivered
         expect(ActionMailer::Base.deliveries.count).to eq(1)
         email_delivery = ActionMailer::Base.deliveries.first
-        expect(email_delivery.to).to eq([user.email])
+        expect(email_delivery.to).to eq([ user.email ])
         expect(email_delivery.subject).to eq("Complete Your Sign Up")
-        expect(email_delivery.body.encoded).to include(admin_user_sign_up_url({ token: token }))
+        expect(email_delivery.body.encoded).to include(admin_sign_up_index_url({ token: token }))
       end
     end
 

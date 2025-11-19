@@ -1,4 +1,4 @@
-RSpec.describe Middleware::AccountSwitch do
+RSpec.describe Middleware::AccountSwitch, unscoped: true do
   it "sets account when it can be derived from the url path" do
     # Arrange
     fake_app = Proc.new { |env| { env: env, account: Switch.current_account } }
@@ -17,7 +17,7 @@ RSpec.describe Middleware::AccountSwitch do
     end
   end
 
-  it "sets account to nil when account reference cannot be derived" do
+  it "doesn't set account when account reference cannot be derived" do
     # Arrange
     fake_app = Proc.new { |env| { env: env, account: Switch.current_account } }
     middleware = Middleware::AccountSwitch.new(fake_app)
@@ -35,7 +35,7 @@ RSpec.describe Middleware::AccountSwitch do
     end
   end
 
-  it "safely sets account to nil nothing provided" do
+  it "safely handles env with no data" do
     # Arrange
     fake_app = Proc.new { |env| { env: env, account: Switch.current_account } }
     middleware = Middleware::AccountSwitch.new(fake_app)
