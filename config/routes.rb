@@ -22,6 +22,10 @@ Rails.application.routes.draw do
     scope :user do
       resources :sign_up, only: [ :index, :create ]
     end
+    namespace :password do
+      resources :recovery, only: [ :index, :create ]
+      resources :reset, only: [ :index, :create ]
+    end
   end
 
   resources :admin, param: :account_reference, only: [ :index, :show ] do

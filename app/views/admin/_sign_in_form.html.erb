@@ -20,8 +20,10 @@
       </div>
     </div>
 
-    <div class="card-footer">
-      <%= f.submit "Sign in", class: "btn btn-primary" %>
+    <div class="card-footer hstack">
+      <%= f.submit "Sign in", class: "btn btn-primary me-auto" %>
+
+      <%= link_to "Forgot Password?", admin_password_recovery_index_path %>
     </div>
   </div>
 <% end %>
