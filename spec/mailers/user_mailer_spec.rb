@@ -43,4 +43,25 @@ RSpec.describe UserMailer, type: :mailer do
       end
     end
   end
+
+  describe "#password_recovery" do
+    it "emails the user with link to user" do
+      # Arrange
+      user = User.create(email: "new@user.com", name: "ME")
+
+      token = "sweet_token"
+      allow(user).to receive(:password_reset_token).and_return(token)
+
+      # Act
+      email = UserMailer.password_recovery(user)
+
+      # Assert
+      aggregate_failures do
+        expect(email.to).to eq([ user.email ])
+        expect(email.subject).to eq("Reset Your Password")
+        expect(email.body.encoded).to include(user.name)
+        expect(email.body.encoded).to include(admin_password_reset_index_url({ token: token }))
+      end
+    end
+  end
 end
