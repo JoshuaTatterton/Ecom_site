@@ -1,0 +1,27 @@
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <%= form_for :user, url: admin_password_recovery_index_path do |f| %>
+      <div class="card">
+        <div class="card-header">
+          <%= link_to admin_index_path, class: "link-underline link-underline-opacity-0" do %>
+            <%= render "generic/bootstrap_icon", icon: "chevron-left" %>
+          <% end %>
+          Password Recovery
+        </div>
+
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <%= f.label :email, "Email address:", class: "form-label" %>
+              <%= f.email_field :email, class: "form-control", placeholder: "name@example.com", required: true %>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer hstack">
+          <%= f.submit "Send Recovery Email", class: "btn btn-primary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

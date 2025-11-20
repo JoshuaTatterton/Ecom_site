@@ -32,34 +32,54 @@ RSpec.describe Account, type: :model do
   end
 
   context "validates" do
-    it "presence of name" do
-      # Act
-      account.name = nil
+    context "#name" do
+      it "presence" do
+        # Act
+        account.name = nil
 
-      # Assert
-      expect(account).to be_invalid
-      expect(account.errors).to be_added(:name, :blank)
+        # Assert
+        expect(account).to be_invalid
+        expect(account.errors).to be_added(:name, :blank)
+      end
     end
 
-    it "presence of reference" do
-      # Act
-      account.reference = nil
+    context "#reference" do
+      it "presence" do
+        # Act
+        account.reference = nil
 
-      # Assert
-      expect(account).to be_invalid
-      expect(account.errors).to be_added(:reference, :blank)
-    end
+        # Assert
+        expect(account).to be_invalid
+        expect(account.errors).to be_added(:reference, :blank)
+      end
 
-    it "uniqueness of reference" do
-      # Arrange
-      account.save
+      it "uniqueness" do
+        # Arrange
+        account.save
 
-      # Act
-      dupe_account = account.dup
+        # Act
+        dupe_account = account.dup
 
-      # Assert
-      expect(dupe_account).to be_invalid
-      expect(dupe_account.errors).to be_added(:reference, :taken, value: account.reference)
+        # Assert
+        expect(dupe_account).to be_invalid
+        expect(dupe_account.errors).to be_added(:reference, :taken, value: account.reference)
+      end
+
+      it "blocklist" do
+        # Act
+        accounts = Account::REFERENCE_BLOCKLIST.map do |reference|
+          Account.new(name: reference, reference: reference)
+        end
+
+        # Assert
+        aggregate_failures do
+          expect(accounts.count > 0).to be(true)
+          accounts.each do |account|
+            expect(account).to be_invalid
+            expect(account.errors).to be_added(:reference, :exclusion, value: account.reference)
+          end
+        end
+      end
     end
   end
 end

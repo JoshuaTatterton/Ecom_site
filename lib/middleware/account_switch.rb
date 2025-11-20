@@ -7,7 +7,7 @@ module Middleware
     def call(env)
       path_segments = env["PATH_INFO"].to_s.split("/").reject(&:blank?)
 
-      if path_segments[0] == "admin"
+      if path_segments[0] == "admin" && !Account::REFERENCE_BLOCKLIST.include?(path_segments[1])
         account_reference = path_segments[1]
 
         Rails.logger.info "Account Reference: #{account_reference}, derived from: #{env["PATH_INFO"]}"
