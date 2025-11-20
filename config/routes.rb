@@ -15,13 +15,17 @@ Rails.application.routes.draw do
   # root "posts#index"
   mount Sidekiq::Web => "/sidekiq"
 
-  post "admin/sign_in", to: "admin#create"
-  delete "admin/sign_out", to: "admin#destroy"
 
   namespace :admin do
     scope :user do
       resources :sign_up, only: [ :index, :create ]
     end
+
+    scope :session do
+      post "sign_in", to: "session#create"
+      delete "sign_out", to: "session#destroy"
+    end
+
     namespace :password do
       resources :recovery, only: [ :index, :create ]
       resources :reset, only: [ :index, :create ]

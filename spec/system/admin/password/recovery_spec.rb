@@ -82,7 +82,6 @@ RSpec.describe "Password Recovery Admin", type: :system, signed_out: true do
               expect(current_path).to eq(admin_index_path)
 
               expect(UserSignUpJob).to have_enqueued_sidekiq_job(user.id)
-              puts UserSignUpJob.jobs.dig(0)
               expect(UserSignUpJob.jobs.dig(0, "account_reference")).to eq(Switch.current_account)
             end
           end

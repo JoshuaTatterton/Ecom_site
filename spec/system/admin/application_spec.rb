@@ -7,7 +7,7 @@ RSpec.describe "Admin::ApplicationController", type: :system do
 
         # Assert
         expect(current_path).to eq(admin_index_path)
-        expect(page).to have_selector("form[action='/admin/sign_in']")
+        expect(page).to have_selector("form[action='/admin/session/sign_in']")
       end
     end
 
