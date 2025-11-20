@@ -1,10 +1,9 @@
 RSpec.describe UserSignUpJob, type: :job do
   describe "#perform" do
-    it "sends an email to the user for the membership" do
+    it "sends an email to the user" do
       # Arrange
       role = Role.create(name: "Sweet Role")
       user = role.users.create(email: "new@user.com")
-      membership = user.membership
 
       password = "MyPassword"
       allow(SecureRandom).to receive(:uuid).and_return(password)
@@ -12,7 +11,7 @@ RSpec.describe UserSignUpJob, type: :job do
       allow_any_instance_of(User).to receive(:authentication_password_reset_token).and_return(token)
 
       # Act
-      UserSignUpJob.new.perform(membership.id)
+      UserSignUpJob.new.perform(user.id)
 
       # Assert
       aggregate_failures do
@@ -31,11 +30,9 @@ RSpec.describe UserSignUpJob, type: :job do
       # Arrange
       role = Role.create(name: "Sweet Role")
       user = role.users.create(email: "new@user.com", name: "me", password: "password", awaiting_authentication: false)
-      puts user.errors.full_messages
-      membership = user.membership
 
       # Act
-      UserSignUpJob.new.perform(membership.id)
+      UserSignUpJob.new.perform(user.id)
 
       # Assert
       aggregate_failures do

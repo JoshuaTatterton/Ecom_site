@@ -1,7 +1,12 @@
 <h1>Welcome to this sweet Ecom Site</h1>
 
 <p>
-  You have been added to Account: <strong><%= @user.role.account.name %></strong>.
+  You have been added to
+  <% if Switch.current_account %>
+    Account: <strong><%= @user.role.account.name %></strong>.
+  <% else %>
+    an account.
+  <% end %>
 </p>
 
 <p>
