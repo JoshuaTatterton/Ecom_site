@@ -10,7 +10,7 @@ class User < ApplicationRecord
   has_one :membership
   has_one :role, through: :membership
 
-  has_secure_password
+  has_secure_password reset_token: { expires_in: 30.minutes }
   has_secure_password :authentication_password, validations: false, reset_token: { expires_in: 1.week }
   has_secure_password :recovery_password, validations: false
 

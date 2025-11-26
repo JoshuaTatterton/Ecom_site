@@ -54,7 +54,7 @@ RSpec.describe "User Sign Up Admin", type: :system, signed_out: true do
       end
     end
 
-    context "when an signed in as a user", signed_out: false do
+    context "when a signed in as a user", signed_out: false do
       it "redirects to admin page" do
         # Arrange
         role = Role.create(name: "Sweet Role")
@@ -109,6 +109,35 @@ RSpec.describe "User Sign Up Admin", type: :system, signed_out: true do
         awaiting_authentication: false
       )
       page.set_rack_session(auth_user_id: user.id)
+
+      # Act
+      # Using driver submit to test malicious behaviour
+      page.driver.submit :post, admin_sign_up_index_path, {
+        user: {
+          name: "New Name",
+          password: "SuperSecretPassword",
+          password_confirmation: "SuperSecretPassword"
+        }
+      }
+
+      # Assert
+      aggregate_failures do
+        expect(current_path).to eq(admin_index_path)
+
+        expect(user.reload.name).to eq("Old Name")
+      end
+    end
+
+    it "redirects if user not found" do
+      # Arrange
+      role = Role.create(name: "Sweet Role")
+      user = role.users.create(
+        email: "test@user.com",
+        name: "Old Name",
+        password: "SuperSecretPassword",
+        awaiting_authentication: false
+      )
+      page.set_rack_session(auth_user_id: "fakeID")
 
       # Act
       # Using driver submit to test malicious behaviour

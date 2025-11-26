@@ -10,21 +10,24 @@ module Admin
       @user = User.find_by_authentication_password_reset_token(token_param)
       if @user&.awaiting_authentication
         session[:auth_user_id] = @user.id
+
         render
       else
+        session.delete(:auth_user_id)
+
         redirect_to admin_index_path
       end
     end
 
     def create
-      @user = User.find(session[:auth_user_id])
+      @user = User.find_by(id: session[:auth_user_id])
 
       if !@user&.awaiting_authentication?
         session.delete(:auth_user_id)
 
         redirect_to admin_index_path
       elsif @user.update(awaiting_authentication: false, **user_params)
-        sign_in(user)
+        sign_in(@user)
         session.delete(:auth_user_id)
 
         redirect_to sign_in_redirect
