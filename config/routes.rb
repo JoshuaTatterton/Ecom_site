@@ -15,7 +15,6 @@ Rails.application.routes.draw do
   # root "posts#index"
   mount Sidekiq::Web => "/sidekiq"
 
-
   namespace :admin do
     scope :user do
       resources :sign_up, only: [ :index, :create ]

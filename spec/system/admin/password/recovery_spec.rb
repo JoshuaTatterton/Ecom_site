@@ -29,18 +29,21 @@ RSpec.describe "Password Recovery Admin", type: :system, signed_out: true do
     end
   end
 
-  describe "#create" do
+  describe "#create", unscoped: true do
     context "with a valid email" do
       context "for an authorised user" do
         it "can trigger password recovery" do
           # Arrange
-          role = Role.create(name: "Sweet Role")
-          user = role.users.create(
-            email: "test@user.com",
-            name: "Test",
-            password: "SuperSecretPassword",
-            awaiting_authentication: false
-          )
+          user = nil
+          Switch.account("primary") {
+            role = Role.create(name: "Sweet Role")
+            user = role.users.create(
+              email: "test@user.com",
+              name: "Test",
+              password: "SuperSecretPassword",
+              awaiting_authentication: false
+            )
+          }
 
           visit admin_password_recovery_index_path
 
@@ -64,9 +67,11 @@ RSpec.describe "Password Recovery Admin", type: :system, signed_out: true do
         context "with an account membership" do
           it "triggers sign up job" do
             # Arrange
-            role = Role.create(name: "Sweet Role")
-            user = role.users.create(email: "test@user.com")
-            membership = user.membership
+            user = nil
+            Switch.account("primary") {
+              role = Role.create(name: "Sweet Role")
+              user = role.users.create(email: "test@user.com")
+            }
 
             visit admin_password_recovery_index_path
 
@@ -82,13 +87,13 @@ RSpec.describe "Password Recovery Admin", type: :system, signed_out: true do
               expect(current_path).to eq(admin_index_path)
 
               expect(UserSignUpJob).to have_enqueued_sidekiq_job(user.id)
-              expect(UserSignUpJob.jobs.dig(0, "account_reference")).to eq(Switch.current_account)
+              expect(UserSignUpJob.jobs.dig(0, "account_reference")).to eq("primary")
             end
           end
         end
 
         context "without an account membership" do
-          it "triggers sign up job" do
+          it "triggers account unscoped sign up job" do
             # Arrange
             user = User.create(email: "test@user.com")
 
@@ -113,33 +118,26 @@ RSpec.describe "Password Recovery Admin", type: :system, signed_out: true do
       end
     end
 
-    # it "redirects if user is already authenticated" do
-    #   # Arrange
-    #   role = Role.create(name: "Sweet Role")
-    #   user = role.users.create(
-    #     email: "test@user.com",
-    #     name: "Old Name",
-    #     password: "SuperSecretPassword",
-    #     awaiting_authentication: false
-    #   )
-    #   page.set_rack_session(auth_user_id: user.id)
+    context "with an invalid email" do
+      it "redirects successfully without triggering anything" do
+        # Arrange
+        visit admin_password_recovery_index_path
 
-    #   # Act
-    #   # Using driver submit to test malicious behaviour
-    #   page.driver.submit :post, admin_sign_up_index_path, {
-    #     user: {
-    #       name: "New Name",
-    #       password: "SuperSecretPassword",
-    #       password_confirmation: "SuperSecretPassword"
-    #     }
-    #   }
+        # Act
+        within("form[action='#{admin_password_recovery_index_path}']") do
+          find("input[name='user[email]']").fill_in(with: "invalid@email.com")
 
-    #   # Assert
-    #   aggregate_failures do
-    #     expect(current_path).to eq(admin_index_path)
+          find("input[type='submit']").click
+        end
 
-    #     expect(user.reload.name).to eq("Old Name")
-    #   end
-    # end
+        # Assert
+        aggregate_failures do
+          expect(current_path).to eq(admin_index_path)
+
+          expect(PasswordRecoveryJob).not_to have_enqueued_sidekiq_job
+          expect(UserSignUpJob).not_to have_enqueued_sidekiq_job
+        end
+      end
+    end
   end
 end

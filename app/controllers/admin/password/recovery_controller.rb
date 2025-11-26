@@ -9,10 +9,12 @@ module Admin
       end
 
       def create
-        user = ::User.find_by(email: user_param)
+        user = User.find_by(email: user_param)
 
         if user&.awaiting_authentication? && user&.user_memberships&.any?
-          UserSignUpJob.perform_async(user.id)
+          Switch.account(user.user_memberships.first.account_reference) {
+            UserSignUpJob.perform_async(user.id)
+          }
         elsif user&.awaiting_authentication?
           UserSignUpJob.perform_async(user.id)
         elsif user

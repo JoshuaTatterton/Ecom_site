@@ -2,7 +2,7 @@
 # e.g. database configs or account feature toggles
 class Account < ApplicationRecord
   # Blocklist around avoiding url clashes
-  REFERENCE_BLOCKLIST = %w(user password session)
+  REFERENCE_BLOCKLIST = %w[user password session]
 
   has_one :account_setting, primary_key: :reference, foreign_key: :account_reference
 

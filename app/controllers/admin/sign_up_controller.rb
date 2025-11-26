@@ -7,7 +7,7 @@ module Admin
     helper_method :user
 
     def index
-      @user = ::User.find_by_authentication_password_reset_token(token_param)
+      @user = User.find_by_authentication_password_reset_token(token_param)
       if @user&.awaiting_authentication
         session[:auth_user_id] = @user.id
         render
@@ -17,7 +17,7 @@ module Admin
     end
 
     def create
-      @user = ::User.find(session[:auth_user_id])
+      @user = User.find(session[:auth_user_id])
 
       if !@user&.awaiting_authentication?
         session.delete(:auth_user_id)
