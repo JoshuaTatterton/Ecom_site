@@ -62,7 +62,7 @@ RSpec.describe "Users Admin", type: :system do
         end
       end
 
-      scenario "schedules a user notification with a new user created" do
+      scenario "schedules a user notification when a new user created" do
         # Arrange
         role = Role.create(name: "Sweet Role")
 
@@ -81,8 +81,9 @@ RSpec.describe "Users Admin", type: :system do
           expect(page).to have_content("new@user.com")
           expect(role.users.count).to eq(1)
 
-          new_membership = role.memberships.first
-          expect(UserSignUpJob).to have_enqueued_sidekiq_job(new_membership.id)
+          new_user = role.users.first
+          expect(UserSignUpJob).to have_enqueued_sidekiq_job(new_user.id)
+          expect(UserSignUpJob.jobs.dig(0, "account_reference")).to eq(Switch.current_account)
         end
       end
     end
