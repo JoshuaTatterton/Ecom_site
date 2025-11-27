@@ -5,7 +5,9 @@
         <%= current_user.email %>
       </a>
       <ul class="dropdown-menu">
-        <li><a class="dropdown-item" href="#">Edit</a></li>
+        <li>
+          <%= link_to "Edit", admin_edit_index_path, id: "user_edit", class: "dropdown-item" %>
+        </li>
         <li><hr class="dropdown-divider"></li>
         <li>
           <%= link_to "Sign out", admin_sign_out_path, data: { turbo_method: :delete }, class: "dropdown-item" %>
