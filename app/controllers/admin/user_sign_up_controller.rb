@@ -1,5 +1,5 @@
 module Admin
-  class SignUpController < ::ApplicationController
+  class UserSignUpController < ::ApplicationController
     include UserSession
 
     before_action :validate_signed_out
