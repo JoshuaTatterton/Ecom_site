@@ -17,7 +17,8 @@ Rails.application.routes.draw do
 
   namespace :admin do
     scope :user do
-      resources :sign_up, only: [ :index, :create ]
+      resources :sign_up, controller: "user_sign_up", only: [ :index, :create ]
+      resources :edit, controller: "user_edit", only: [ :index, :create ]
     end
 
     scope :session do
