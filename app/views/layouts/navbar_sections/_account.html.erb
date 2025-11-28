@@ -20,7 +20,7 @@
   <% elsif Switch.current_account %>
     <%= link_to Switch.this_account.name, admin_path(Switch.current_account), class: "dropdown-item" %>
   <% else %>
-    <%= link_to admin_index_path, class: "dropdown-item m-2 fs-4" do %>
+    <%= link_to admin_index_path, class: "dropdown-item mx-2 fs-4" do %>
       <%= render "generic/bootstrap_icon", icon: "house-door" %>
     <% end %>
   <% end %>
