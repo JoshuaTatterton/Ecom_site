@@ -29,7 +29,7 @@
           <tr id="product_<%= product.id %>">
             <td><%= product.title %></td>
             <td><%= product.reference %></td>
-            <td><%= role.updated_at %></td>
+            <td><%= product.updated_at %></td>
             <td>
               <% if cannot? :update, product %>
                 <%= render "generic/buttons/edit", disabled: true, tooltip: "You do not have permissions to edit Products" %>
@@ -46,7 +46,7 @@
                   class: "link-underline link-underline-opacity-0",
                   data: {
                     turbo_method: :delete,
-                    turbo_confirm: "Are you sure you want to delete Role: #{product.name}?"
+                    turbo_confirm: "Are you sure you want to delete Product: #{product.reference}?"
                   } do
                 %>
                   <%= render "generic/buttons/delete" %>

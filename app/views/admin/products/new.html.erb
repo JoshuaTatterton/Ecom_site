@@ -1,0 +1,14 @@
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" aria-current="page">
+      <%= link_to "Products", admin_products_path(Switch.current_account) %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      New
+    </li>
+  </ol>
+</nav>
+
+<%= form_for product, url: admin_products_path(Switch.current_account) do |f| %>
+  <%= render "form", f: f, type: "Create" %>
+<% end %>

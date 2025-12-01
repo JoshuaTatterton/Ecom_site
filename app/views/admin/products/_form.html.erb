@@ -1,0 +1,39 @@
+<div class="card mb-3">
+  <div class="card-header">
+    Product
+  </div>
+
+  <div class="card-body">
+    <div class="row">
+      <div class="col-lg-6 mb-3">
+        <%= f.label :title, "Title:", class: "form-label" %>
+        <%= f.text_field :title, class: "form-control", required: true %>
+      </div>
+
+      <div class="col-lg-6 mb-3">
+        <%= f.label :reference, "Reference:", class: "form-label" %>
+        <%= f.text_field :reference, class: "form-control", required: true %>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col mb-2">
+        <%= f.label :visible, "Visible:", class: "form-label " %>
+        <span class="form-switch mr-1">
+          <%= f.check_box :visible, class: "form-check-input", role: "switch" %>
+        </span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <%= f.label :description, "Description:", class: "form-label" %>
+        <%= f.text_area :description, class: "form-control" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <%= f.submit type, class: "btn btn-success" %>
+  </div>
+</div>
