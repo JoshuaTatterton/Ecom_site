@@ -66,5 +66,31 @@ RSpec.describe Pim::Product, type: :model do
         expect(product).to be_valid
       end
     end
+
+    describe "#title" do
+      it "is required" do
+        # Act
+        product = Pim::Product.new
+
+        # Assert
+        aggregate_failures do
+          expect(product).to be_invalid
+          expect(product.errors).to be_added(:title, :blank)
+        end
+      end
+    end
+
+    describe "#visible" do
+      it "defaults to false" do
+        # Act
+        product = Pim::Product.create(
+          reference: "product",
+          title: "Product"
+        )
+
+        # Assert
+        expect(product.visible).to eq(false)
+      end
+    end
   end
 end

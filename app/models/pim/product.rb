@@ -5,5 +5,6 @@ module Pim
     include AccountScoped
 
     validates :reference, presence: true, uniqueness: { scope: :account_reference }
+    validates :title, presence: true
   end
 end
