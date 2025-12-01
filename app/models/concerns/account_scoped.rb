@@ -6,6 +6,6 @@ module AccountScoped
 
     default_scope { where(account_reference: Switch.current_account) }
 
-    # validates :account_reference, presence: true
+    validates :account_reference, presence: true
   end
 end

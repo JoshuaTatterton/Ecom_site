@@ -35,5 +35,7 @@ Rails.application.routes.draw do
   resources :admin, param: :account_reference, only: [ :index, :show ] do
     resources :roles, controller: "admin/roles", except: [ :show ]
     resources :users, controller: "admin/users", except: [ :show ]
+
+    resources :products, controller: "admin/products", except: [ :show ]
   end
 end

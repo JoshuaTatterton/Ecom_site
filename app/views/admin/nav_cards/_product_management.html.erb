@@ -1,0 +1,16 @@
+<% if can?(:view, Pim::Product) %>
+  <div class="col-4">
+    <div class="card">
+      <div class="card-header">
+        <%= render "generic/bootstrap_icon", icon: "tags" %>
+        Product Management
+      </div>
+
+      <div class="card-body">
+        <% if can? :view, Pim::Product %>
+          <%= link_to "Products", admin_products_path(Switch.current_account), class: "dropdown-item" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
