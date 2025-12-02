@@ -6,14 +6,21 @@ require 'database_cleaner/active_record'
 
 RSpec.configure do |config|
   config.around(:each) do |example|
+    # Abstract records for dedicated databases to be added here:
+    database_cleaners = [ ApplicationRecord, PimRecord ].map { |klass|
+      DatabaseCleaner[:active_record, db: klass]
+    }
+
     if [ :system ].include?(example.metadata[:type])
-      DatabaseCleaner.strategy = :truncation
+      database_cleaners.each { |cleaner| cleaner.strategy = :truncation }
     else
-      DatabaseCleaner.strategy = :transaction
+      database_cleaners.each { |cleaner| cleaner.strategy = :transaction }
     end
 
-    DatabaseCleaner.cleaning do
-      example.run
-    end
+    database_cleaners.each(&:start)
+
+    example.run
+
+    database_cleaners.each(&:clean)
   end
 end

@@ -1,11 +1,15 @@
 module PermissionsHelper
+  PRODUCT_PERMISSIONS = [
+    { "resource" => "products", "action" => "view" }, { "resource" => "products", "action" => "create" },
+    { "resource" => "products", "action" => "update" }, { "resource" => "products", "action" => "delete" }
+  ]
   USER_PERMISSIONS = [
     { "resource" => "users", "action" => "view" }, { "resource" => "users", "action" => "add" },
     { "resource" => "user_roles", "action" => "update" }, { "resource" => "users", "action" => "remove" },
     { "resource" => "roles", "action" => "view" }, { "resource" => "roles", "action" => "create" },
     { "resource" => "roles", "action" => "update" }, { "resource" => "roles", "action" => "delete" }
   ]
-  ALL_PERMISSIONS = USER_PERMISSIONS
+  ALL_PERMISSIONS = PRODUCT_PERMISSIONS + USER_PERMISSIONS
 
   RESOURCE_MAP = {
     "roles" => Role,
