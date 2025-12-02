@@ -47,9 +47,11 @@ development:
 test:
   primary:
     <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
     database: ecom_site_test
   pim:
     <<: *default
+    url: <%= ENV["DATABASE_URL"] %>
     migrations_paths: db/pim_migrate
     database: ecom_pim_test
 
