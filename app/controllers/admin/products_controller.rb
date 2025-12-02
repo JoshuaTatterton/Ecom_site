@@ -15,7 +15,7 @@ module Admin
     def create
       authorize :create, product
 
-      if product.update(product_params)
+      if product.update(product_create_params)
         redirect_to action: :index
       else
         render :new
@@ -31,7 +31,7 @@ module Admin
       @product = Pim::Product.find(params[:id])
       authorize :update, product
 
-      if product.update(product_params)
+      if product.update(product_update_params)
         redirect_to action: :index
       else
         render :edit
@@ -49,8 +49,12 @@ module Admin
 
     private
 
-    def product_params
-      params.require(:pim_product).permit(:title, :reference, :description, :visible)
+    def product_create_params
+      params.require(:pim_product).permit(:reference, :title, :description, :visible)
+    end
+
+    def product_update_params
+      params.require(:pim_product).permit(:title, :description, :visible)
     end
 
     def products

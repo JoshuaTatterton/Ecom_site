@@ -4,6 +4,8 @@ module Pim
   class Product < PimRecord
     include AccountScoped
 
+    attr_readonly :reference
+
     validates :reference, presence: true, uniqueness: { scope: :account_reference }
     validates :title, presence: true
   end

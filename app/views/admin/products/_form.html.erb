@@ -11,14 +11,19 @@
       </div>
 
       <div class="col-lg-6 mb-3">
-        <%= f.label :reference, "Reference:", class: "form-label" %>
-        <%= f.text_field :reference, class: "form-control", required: true %>
+        <%= f.label :reference, class: "form-label hstack" do %>
+          <span class="me-auto">Reference:</span>
+          <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Reference is only configurable on create">
+            <%= render "generic/bootstrap_icon", icon: "info-circle", type: "danger" %>
+          </span>
+        <% end %>
+        <%= f.text_field :reference, class: "form-control", required: type == "Create", disabled: type != "Create" %>
       </div>
     </div>
 
     <div class="row">
       <div class="col mb-2">
-        <%= f.label :visible, "Visible:", class: "form-label " %>
+        <%= f.label :visible, "Visible:", class: "form-label" %>
         <span class="form-switch mr-1">
           <%= f.check_box :visible, class: "form-check-input", role: "switch" %>
         </span>

@@ -25,6 +25,20 @@ RSpec.describe Pim::Product, type: :model do
         end
       end
 
+      it "is readonly" do
+        # Arrange
+        original_reference = "old"
+        product = Pim::Product.create(
+          reference: original_reference,
+          title: "Product"
+        )
+
+        # Act & Assert
+        expect {
+          product.update(reference: "new")
+        }.to raise_error(ActiveRecord::ReadonlyAttributeError, "reference")
+      end
+
       it "is unique per Account" do
         # Arrange
         product_reference = "Unique"
