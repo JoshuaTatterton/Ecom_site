@@ -1,0 +1,29 @@
+<%= form_for :user, url: admin_sign_in_path do |f| %>
+  <div class="card">
+    <div class="card-header">
+      Sign in
+    </div>
+
+    <div class="card-body">
+      <div class="row">
+        <div class="col">
+          <%= f.label :email, "Email address:", class: "form-label" %>
+          <%= f.email_field :email, class: "form-control", placeholder: "name@example.com" %>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <%= f.label :password, "Password:", class: "form-label" %>
+          <%= f.password_field :password, class: "form-control", "aria-describedby": "passwordHelpBlock" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer hstack">
+      <%= f.submit "Sign in", class: "btn btn-primary me-auto" %>
+
+      <%= link_to "Forgot Password?", admin_password_recovery_index_path %>
+    </div>
+  </div>
+<% end %>

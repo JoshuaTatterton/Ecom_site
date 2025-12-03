@@ -1,0 +1,66 @@
+<%# Generic pagination that requires page, per and count params %>
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    <% if page_number > 2 %>
+      <li class="page-item" id="first">
+        <%= link_to ::UrlHelper.add_params(page_uri, { "page[no]" => 1 }).to_s, class: "page-link" do %>
+          <%= render "generic/bootstrap_icon", icon: "chevron-double-left" %>
+        <% end %>
+      </li>
+    <% end %>
+
+    <% if page_number > 1 %>
+      <li class="page-item" id="previous">
+        <%= link_to ::UrlHelper.add_params(page_uri, { "page[no]" => page_number - 1 }).to_s, class: "page-link" do %>
+          <%= render "generic/bootstrap_icon", icon: "chevron-left" %>
+        <% end %>
+      </li>
+    <% end %>
+
+    <% numbered_link = page_number - 2 %>
+
+    <% if numbered_link > 1 %>
+      <li class="page-item disabled" id="many_lower">
+        <%= link_to "#", class: "page-link" do %>
+          ...
+        <% end %>
+      </li>
+    <% end %>
+
+    <% 5.times do %>
+      <% if numbered_link > 0 && numbered_link <= page_count %>
+        <li class="page-item <%= "active" if numbered_link == page_number %>">
+          <%= link_to ::UrlHelper.add_params(page_uri, { "page[no]" => numbered_link }).to_s, class: "page-link" do %>
+            <%= numbered_link %>
+          <% end %>
+        </li>
+      <% end %>
+
+      <% numbered_link += 1 %>
+    <% end %>
+
+    <% if numbered_link <= page_count %>
+      <li class="page-item disabled" id="many_higher">
+        <%= link_to "#", class: "page-link" do %>
+          ...
+        <% end %>
+      </li>
+    <% end %>
+
+    <% if page_count - page_number >= 1 %>
+      <li class="page-item" id="next">
+        <%= link_to ::UrlHelper.add_params(page_uri, { "page[no]" => page_number + 1 }).to_s, class: "page-link" do %>
+          <%= render "generic/bootstrap_icon", icon: "chevron-right" %>
+        <% end %>
+      </li>
+    <% end %>
+
+    <% if page_count - page_number >= 2 %>
+      <li class="page-item" id="last">
+        <%= link_to ::UrlHelper.add_params(page_uri, { "page[no]" => page_count }).to_s, class: "page-link" do %>
+          <%= render "generic/bootstrap_icon", icon: "chevron-double-right" %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</nav>

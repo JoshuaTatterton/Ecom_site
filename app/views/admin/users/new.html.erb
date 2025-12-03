@@ -1,0 +1,50 @@
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" aria-current="page">
+      <%= link_to "Users", admin_users_path(Switch.current_account) %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      New
+    </li>
+  </ol>
+</nav>
+
+<%= form_for :user, url: admin_users_path(Switch.current_account) do |f| %>
+  <div class="card mb-3">
+    <div class="card-header">
+      User:
+    </div>
+
+    <div class="card-body">
+      <div class="row mb-3">
+        <div class="col-lg-6">
+          <%= f.label :email, "Email:", class: "form-label" %>
+          <%= f.text_field :email, class: "form-control", required: true, value: user.email %>
+        </div>
+
+        <div class="col-lg-6">
+          <%= f.label :role, "Role:", class: "form-label" %>
+          <%= f.select :role,
+            roles_scope.map { |role|
+              [ role.name, role.id, { "data-bs-target": role.administrator ? "#administrator_warning" : nil } ]
+            },
+            { selected: role.id, include_blank: "- Select -", required: true },
+            { class: "form-select", "data-bs-toggle": "collapse" } %>
+        </div>
+      </div>
+
+      <div class="collapse row" id="administrator_warning">
+        <div class="col">
+          <div class="alert alert-danger d-flex align-items-center" role="alert">
+            <%= render "generic/bootstrap_icon", icon: "info-circle", type: "danger", classes: "flex-shrink-0 me-2" %>
+            Caution! After assigning an administrator Role to a User it cannot be changed.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <%= f.submit "Add", class: "btn btn-success" %>
+    </div>
+  </div>
+<% end %>

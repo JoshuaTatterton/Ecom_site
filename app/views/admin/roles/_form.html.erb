@@ -1,0 +1,62 @@
+<div class="card mb-3">
+  <div class="card-header">
+    Role
+  </div>
+
+  <div class="card-body">
+    <div class="row">
+      <div class="col">
+        <%= f.label :name, "Name:", class: "form-label" %>
+        <%= f.text_field :name, class: "form-control", required: true %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header">
+    Product Permissions:
+  </div>
+
+  <div class="card-body" id="product_permissions">
+    <div class="row">
+      <div class="col">
+        <% PermissionsHelper::PRODUCT_PERMISSIONS.each_with_index do |permission, index| %>
+          <% resource = permission["resource"] %>
+          <% action = permission["action"] %>
+
+          <div class="form-check">
+            <%= check_box_tag "role[permissions][#{resource}][#{action}]", true, role.permissions.include?(permission), class: "form-check-input" %>
+            <%= label_tag "role[permissions][#{resource}][#{action}]", "#{action.titleize} #{resource.titleize}", class: "form-check-label" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header">
+    User Permissions:
+  </div>
+
+  <div class="card-body" id="user_permissions">
+    <div class="row">
+      <div class="col">
+        <% PermissionsHelper::USER_PERMISSIONS.each_with_index do |permission, index| %>
+          <% resource = permission["resource"] %>
+          <% action = permission["action"] %>
+
+          <div class="form-check">
+            <%= check_box_tag "role[permissions][#{resource}][#{action}]", true, role.permissions.include?(permission), class: "form-check-input" %>
+            <%= label_tag "role[permissions][#{resource}][#{action}]", "#{action.titleize} #{resource.titleize}", class: "form-check-label" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <%= f.submit type, class: "btn btn-success" %>
+  </div>
+</div>

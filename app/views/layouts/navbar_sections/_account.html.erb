@@ -1,0 +1,27 @@
+<div class="navbar-brand">
+  <% if Switch.current_account && current_user.accounts.count > 1 %>
+    <ul class="navbar-nav my-2 my-lg-0">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" id="account_nav" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <%= Switch.this_account.name %>
+        </a>
+        <ul class="dropdown-menu">
+          <% current_user.accounts.select { |a| a.reference != Switch.current_account }.each_with_index do |account, index| %>
+            <li>
+              <%= link_to account.name, admin_path(account.reference), class: "dropdown-item" %>
+            </li>
+            <% if index < current_user.accounts.count - 2 %>
+              <li><hr class="dropdown-divider"></li>
+            <% end %>
+          <% end %>
+        </ul>
+      </li>
+    </ul>
+  <% elsif Switch.current_account %>
+    <%= link_to Switch.this_account.name, admin_path(Switch.current_account), class: "dropdown-item" %>
+  <% else %>
+    <%= link_to admin_index_path, class: "dropdown-item mx-2 fs-4" do %>
+      <%= render "generic/bootstrap_icon", icon: "house-door" %>
+    <% end %>
+  <% end %>
+</div>

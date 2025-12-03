@@ -1,0 +1,75 @@
+<div class="card">
+  <div class="card-header hstack">
+    <span class="me-auto">
+      Users
+    </span>
+
+    <% if can? :add, Membership %>
+      <%= link_to new_admin_user_path(Switch.current_account) do %>
+        <%= render "generic/buttons/new" %>
+      <% end %>
+    <% else %>
+      <%= render "generic/buttons/new", disabled: true, tooltip: "You do not have permissions to add Users" %>
+    <% end %>
+  </div>
+
+  <div class="card-body">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">Name:</th>
+          <th scope="col">Email:</th>
+          <th scope="col">Role:</th>
+          <th scope="col">Last Updated:</th>
+          <th scope="col">Actions:</th>
+        </tr>
+      </thead>
+
+      <tbody class="table-group-divider" id="users">
+        <% memberships.each do |membership| %>
+          <tr id="user_<%= membership.id %>">
+            <td><%= membership.user.name %></td>
+            <td><%= membership.user.email %></td>
+            <td><%= membership.role.name %></td>
+            <td><%= membership.updated_at %></td>
+            <td>
+              <% if current_user.membership.id == membership.id %>
+                <%= render "generic/buttons/edit", disabled: true, tooltip: "Cannot edit yourself" %>
+              <% elsif membership.role.administrator %>
+                <%= render "generic/buttons/edit", disabled: true, tooltip: "Cannot edit Admin Users" %>
+              <% elsif cannot? :update, membership %>
+                <%= render "generic/buttons/edit", disabled: true, tooltip: "You do not have permissions to edit User" %>
+              <% else %>
+                <%= link_to edit_admin_user_path(Switch.current_account, membership.id), class: "link-underline link-underline-opacity-0" do %>
+                  <%= render "generic/buttons/edit" %>
+                <% end %>
+              <% end %>
+
+              <% if current_user.membership.id == membership.id %>
+                <%= render "generic/buttons/delete", disabled: true, tooltip: "Cannot remove yourself" %>
+              <% elsif membership.role.administrator %>
+                <%= render "generic/buttons/delete", disabled: true, tooltip: "Cannot remove Admin Users" %>
+              <% elsif cannot? :remove, membership %>
+                <%= render "generic/buttons/delete", disabled: true, tooltip: "You do not have permissions to remove User" %>
+              <% else %>
+                <%= link_to admin_user_path(Switch.current_account, membership.id),
+                  class: "link-underline link-underline-opacity-0",
+                  data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Are you sure you want to remove User: #{membership.user.email}?"
+                  } do
+                %>
+                  <%= render "generic/buttons/delete" %>
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer">
+    <%= render "generic/pagination" %>
+  </div>
+</div>

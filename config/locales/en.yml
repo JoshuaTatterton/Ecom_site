@@ -40,3 +40,6 @@ en:
           attributes:
             permissions:
               invalid_json: "invalid"
+            administrator:
+              cannot_update: "cannot update administrator role"
+              cannot_update: "cannot destroy administrator role"

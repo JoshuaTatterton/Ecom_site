@@ -10,6 +10,99 @@ RSpec.describe User, type: :model do
     expect(user).to be_persisted
   end
 
+  describe "#email" do
+    it "is normalized" do
+      # Act
+      user = User.create(email: " Real@Email.com ")
+
+      # Assert
+      expect(user.reload.email).to eq("real@email.com")
+    end
+  end
+
+  describe "#role" do
+    it "returns the role for the currently scoped account" do
+      # Arrange
+      user = User.create(email: "real@email.com")
+
+      account_1_role = Role.create(name: "primary")
+      user.create_membership(role: account_1_role)
+
+      account_2_role = nil
+      Switch.account("secondary") {
+        account_2_role = Role.create(name: "secondary")
+        user.reload.create_membership(role: account_2_role)
+      }
+
+      # Act
+      found_primary_role = user.reload.role
+      found_secondary_role = nil
+      Switch.account("secondary") {
+        found_secondary_role = user.reload.role
+      }
+
+      # Assert
+      aggregate_failures do
+        expect(found_primary_role).to eq(account_1_role)
+        expect(found_secondary_role).to eq(account_2_role)
+      end
+    end
+  end
+
+  describe "#user_memberships" do
+    it "returns a list of memberships outside the currently scoped account" do
+      # Arrange
+      user = User.create(email: "real@email.com")
+
+      account_1_membership = user.create_membership(
+        role: Role.create(name: "primary")
+      )
+
+      account_2_membership = nil
+      Switch.account("secondary") {
+        account_2_membership = user.reload.create_membership(
+          role: Role.create(name: "secondary")
+        )
+      }
+
+      # Act
+      memberships = user.user_memberships
+
+      # Assert
+      expect(memberships).to match_array([
+        UserMembership.find(account_1_membership.id),
+        UserMembership.find(account_2_membership.id)
+      ])
+    end
+  end
+
+  describe "#accounts" do
+    it "returns a list of memberships outside the currently scoped account" do
+      # Arrange
+      user = User.create(email: "real@email.com")
+
+      account_1_membership = user.create_membership(
+        role: Role.create(name: "primary")
+      )
+
+      account_2_membership = nil
+      Switch.account("secondary") {
+        account_2_membership = user.reload.create_membership(
+          role: Role.create(name: "secondary")
+        )
+      }
+
+      # Act
+      accounts = user.accounts
+
+      # Assert
+      expect(accounts).to match_array([
+        Account.find_by(reference: "primary"),
+        Account.find_by(reference: "secondary")
+      ])
+    end
+  end
+
   context "validations" do
     describe "#email" do
       it "is required" do
