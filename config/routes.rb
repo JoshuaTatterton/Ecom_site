@@ -33,16 +33,22 @@ Rails.application.routes.draw do
   end
 
   resources :admin, param: :account_reference, only: [ :index, :show ] do
-    resources :auth, controller: "admin/pim", only: [ :index ] do
+    resources :pim, controller: "admin/pim", only: [ :index ] do
+      collection do
+        resources :products, controller: "admin/products", except: [ :show ]
+      end
+    end
+
+    resources :auth, controller: "admin/auth", only: [ :index ] do
       collection do
         resources :roles, controller: "admin/roles", except: [ :show ]
         resources :users, controller: "admin/users", except: [ :show ]
       end
     end
 
-    resources :pim, controller: "admin/pim", only: [ :index ] do
+    resources :settings, controller: "admin/settings", only: [ :index ] do
       collection do
-        resources :products, controller: "admin/products", except: [ :show ]
+        resources :currencies, controller: "admin/currencies", except: [ :new, :show, :edit ]
       end
     end
   end
