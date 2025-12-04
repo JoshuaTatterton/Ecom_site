@@ -78,7 +78,7 @@ RSpec.describe "Roles Admin", type: :system do
 
       within("form[action='#{admin_role_path(Switch.current_account, role.id)}']") do
         find("input[name='role[name]']").fill_in(with: "Sweet Role")
-        within("#user_permissions") do
+        within("#auth_permissions") do
           find("input[name='role[permissions][roles][create]']").click
           find("input[name='role[permissions][roles][update]']").click
         end

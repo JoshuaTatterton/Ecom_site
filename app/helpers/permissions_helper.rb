@@ -3,18 +3,25 @@ module PermissionsHelper
     { "resource" => "products", "action" => "view" }, { "resource" => "products", "action" => "create" },
     { "resource" => "products", "action" => "update" }, { "resource" => "products", "action" => "delete" }
   ]
-  USER_PERMISSIONS = [
+  AUTH_PERMISSIONS = [
     { "resource" => "users", "action" => "view" }, { "resource" => "users", "action" => "add" },
     { "resource" => "user_roles", "action" => "update" }, { "resource" => "users", "action" => "remove" },
     { "resource" => "roles", "action" => "view" }, { "resource" => "roles", "action" => "create" },
     { "resource" => "roles", "action" => "update" }, { "resource" => "roles", "action" => "delete" }
   ]
-  ALL_PERMISSIONS = PRODUCT_PERMISSIONS + USER_PERMISSIONS
+  SETTINGS_PERMISSIONS = [
+    { "resource" => "currencies", "action" => "view" }, { "resource" => "currencies", "action" => "add" },
+    { "resource" => "currency_defaults", "action" => "update" }, { "resource" => "currencies", "action" => "delete" }
+  ]
+  ALL_PERMISSIONS = PRODUCT_PERMISSIONS + AUTH_PERMISSIONS + SETTINGS_PERMISSIONS
 
   RESOURCE_MAP = {
+    "products" => Pim::Product,
     "roles" => Role,
     "users" => Membership,
-    "user_roles" => Membership
+    "user_roles" => Membership,
+    "currencies" => Currency,
+    "currency_defaults" => Currency
   }
 
   # Map permissions into PERMISSIONS format each param should look like:

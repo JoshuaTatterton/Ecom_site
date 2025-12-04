@@ -37,13 +37,35 @@
 
 <div class="card mb-3">
   <div class="card-header">
-    User Permissions:
+    Auth Permissions:
   </div>
 
-  <div class="card-body" id="user_permissions">
+  <div class="card-body" id="auth_permissions">
     <div class="row">
       <div class="col">
-        <% PermissionsHelper::USER_PERMISSIONS.each_with_index do |permission, index| %>
+        <% PermissionsHelper::AUTH_PERMISSIONS.each_with_index do |permission, index| %>
+          <% resource = permission["resource"] %>
+          <% action = permission["action"] %>
+
+          <div class="form-check">
+            <%= check_box_tag "role[permissions][#{resource}][#{action}]", true, role.permissions.include?(permission), class: "form-check-input" %>
+            <%= label_tag "role[permissions][#{resource}][#{action}]", "#{action.titleize} #{resource.titleize}", class: "form-check-label" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header">
+    Settings Permissions:
+  </div>
+
+  <div class="card-body" id="settings_permissions">
+    <div class="row">
+      <div class="col">
+        <% PermissionsHelper::SETTINGS_PERMISSIONS.each_with_index do |permission, index| %>
           <% resource = permission["resource"] %>
           <% action = permission["action"] %>
 
