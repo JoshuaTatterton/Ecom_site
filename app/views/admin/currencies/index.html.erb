@@ -5,14 +5,16 @@
         Currencies
       </span>
 
-      <% if can? :create, currency %>
+      <% if (CurrencyHelper::CURRENCY_ISOS - currencies.pluck(:iso)).empty? %>
+        <%= render "generic/buttons/new", disabled: true, tooltip: "No more Currencies to add" %>
+      <% elsif can? :create, currency %>
         <span data-bs-toggle="modal" data-bs-target="#new_currency_modal">
           <%= render "generic/buttons/new" %>
         </span>
 
         <%= render "new_modal" %>
       <% else %>
-        <%= render "generic/buttons/new", disabled: true, tooltip: "You do not have permissions to create Currencies" %>
+        <%= render "generic/buttons/new", disabled: true, tooltip: "You do not have permissions to add Currencies" %>
       <% end %>
     </div>
 

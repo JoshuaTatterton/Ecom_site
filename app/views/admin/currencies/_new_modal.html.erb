@@ -8,15 +8,30 @@
         </div>
 
         <div class="modal-body">
-          <%= f.label :iso, class: "form-label" do %>
-            Currency:
+          <div class="row mb-3">
+            <div class="col">
+              <%= f.label :iso, class: "form-label" do %>
+                Currency:
+              <% end %>
+              <%= f.select :iso,
+                (CurrencyHelper::CURRENCY_ISOS - currencies.pluck(:iso)).map { |iso|
+                  [ "#{iso} (#{CurrencyHelper::CURRENCIES.dig(iso, :symbol)})", iso ]
+                },
+                { include_blank: "- Select -", required: true },
+                { class: "form-select" } %>
+            </div>
+          </div>
+
+          <% if can? :update, :currency_defaults %>
+            <div class="row">
+              <div class="col">
+                <%= f.label :default, "Make this the default Currency for the Account:", class: "form-label" %>
+                <span class="form-switch fs-5 ms-2">
+                  <%= f.check_box :default, class: "form-check-input border-dark-subtle", role: "switch" %>
+                </span>
+              </div>
+            </div>
           <% end %>
-          <%= f.select :iso,
-            (CurrencyHelper::CURRENCY_ISOS - currencies.pluck(:iso)).map { |iso|
-              [ "#{iso} (#{CurrencyHelper::CURRENCIES.dig(iso, :symbol)})", iso ]
-            },
-            { include_blank: "- Select -", required: true },
-            { class: "form-select" } %>
         </div>
 
         <div class="modal-footer">
