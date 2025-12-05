@@ -1,14 +1,16 @@
 import "bootstrap/bootstrap.bundle.min"
 
+const dummyEvent = { target: document }
+
 // Tooltips
-export const initializeTooltips = () => {
-  const tooltipTriggerList = document.querySelectorAll("[data-bs-toggle='tooltip']")
+export const initializeTooltips = (event = dummyEvent) => {
+  const tooltipTriggerList = event.target.querySelectorAll("[data-bs-toggle='tooltip']")
   const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 }
 
 // Collapse
-export const initializeSelectCollapses = () => {
-  const collapseElementList = document.querySelectorAll("select[data-bs-toggle='collapse']")
+export const initializeSelectCollapses = (event = dummyEvent) => {
+  const collapseElementList = event.target.querySelectorAll("select[data-bs-toggle='collapse']")
 
   collapseElementList.forEach(collapseEl => {
     const initialValue = collapseEl.value
@@ -18,7 +20,7 @@ export const initializeSelectCollapses = () => {
     collapseEl.querySelectorAll("option[data-bs-target]").forEach(option => {
       const selector = option.getAttribute("data-bs-target")
       if (!collapseObjects[selector]) {
-        const element = document.querySelector(selector)
+        const element = event.target.querySelector(selector)
 
         if (!!element) {
           collapseObjects[selector] = new bootstrap.Collapse(element, { toggle: false })
