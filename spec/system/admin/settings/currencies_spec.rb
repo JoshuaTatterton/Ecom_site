@@ -30,35 +30,27 @@ RSpec.describe "Currencies Admin", type: :system do
     end
   end
 
-  # describe "#create" do
-  #   scenario "can create a product" do
-  #     # Arrange
-  #     title = "Sweet"
-  #     reference = "sweet"
-  #     description = "This sweet product"
+  describe "#create" do
+    scenario "can add a currency", js: true do
+      # Arrange
+      visit admin_currencies_path(Switch.current_account)
 
-  #     # Act
-  #     visit new_admin_product_path(Switch.current_account)
+      # Act
+      find("[data-bs-toggle='modal'][data-bs-target='#new_currency_modal']").click
 
-  #     within("form[action='#{admin_products_path(Switch.current_account)}']") do
-  #       find("input[name='pim_product[title]']").fill_in(with: title)
-  #       find("input[name='pim_product[reference]']").fill_in(with: reference)
-  #       find("label[for='pim_product_visible']").click
-  #       find("textarea[name='pim_product[description]']").fill_in(with: description)
+      within("form[action='#{admin_currencies_path(Switch.current_account)}']") do
+        find("select[name='currency[iso]']").select("GBP (£)")
 
-  #       find("input[type='submit']").click
-  #     end
+        find("input[type='submit']").click
+      end
 
-  #     # Assert
-  #     aggregate_failures do
-  #       expect(page).to have_content("Sweet")
-  #       created_product = Pim::Product.find_by(reference: reference)
-  #       expect(created_product.title).to eq(title)
-  #       expect(created_product.visible).to eq(true)
-  #       expect(created_product.description).to eq(description)
-  #     end
-  #   end
-  # end
+      # Assert
+      aggregate_failures do
+        expect(page).to have_content("GBP")
+        expect(page).not_to have_content("USD")
+      end
+    end
+  end
 
   # describe "#update" do
   #   scenario "can update a product" do
@@ -83,23 +75,26 @@ RSpec.describe "Currencies Admin", type: :system do
   #   end
   # end
 
-  # describe "#destroy" do
-  #   scenario "can destroy a product" do
-  #     # Arrange
-  #     product = Pim::Product.create(title: "Sweet", reference: "sweet")
+  describe "#destroy" do
+    scenario "can destroy a product" do
+      # Arrange
+      usd = Currency.create(CurrencyHelper::CURRENCIES["USD"])
 
-  #     visit admin_products_path(Switch.current_account)
+      visit admin_currencies_path(Switch.current_account)
 
-  #     # Act
-  #     within("tr#product_#{product.id}") do
-  #       find("a[href='#{admin_product_path(Switch.current_account, product.id)}']").click
-  #     end
+      # Act
+      within("tr#currency_#{usd.id}") do
+        find("a[href='#{admin_currency_path(Switch.current_account, usd.id)}']").click
+      end
 
-  #     # Assert
-  #     aggregate_failures do
-  #       expect(page).not_to have_content(product.title)
-  #       expect(Pim::Product.find_by(id: product.id)).to eq(nil)
-  #     end
-  #   end
-  # end
+      # Assert
+      aggregate_failures do
+        expect(current_path).to have_content(admin_currencies_path(Switch.current_account))
+
+        within("tbody") do
+          expect(page).not_to have_content(usd.iso)
+        end
+      end
+    end
+  end
 end

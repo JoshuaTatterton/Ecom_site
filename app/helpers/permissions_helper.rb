@@ -11,7 +11,7 @@ module PermissionsHelper
   ]
   SETTINGS_PERMISSIONS = [
     { "resource" => "currencies", "action" => "view" }, { "resource" => "currencies", "action" => "add" },
-    { "resource" => "currency_defaults", "action" => "update" }, { "resource" => "currencies", "action" => "delete" }
+    { "resource" => "currency_defaults", "action" => "update" }, { "resource" => "currencies", "action" => "remove" }
   ]
   ALL_PERMISSIONS = PRODUCT_PERMISSIONS + AUTH_PERMISSIONS + SETTINGS_PERMISSIONS
 

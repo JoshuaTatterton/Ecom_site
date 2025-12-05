@@ -1,0 +1,28 @@
+<div class="modal fade" id="new_currency_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <%= form_for currency, url: admin_currencies_path(Switch.current_account), data: { turbo: true } do |f| %>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Add Currency</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <%= f.label :iso, class: "form-label" do %>
+            Currency:
+          <% end %>
+          <%= f.select :iso,
+            (CurrencyHelper::CURRENCY_ISOS - currencies.pluck(:iso)).map { |iso|
+              [ "#{iso} (#{CurrencyHelper::CURRENCIES.dig(iso, :symbol)})", iso ]
+            },
+            { include_blank: "- Select -", required: true },
+            { class: "form-select" } %>
+        </div>
+
+        <div class="modal-footer">
+          <%= f.submit "Create", class: "btn btn-success", data: { bs_dismiss: "modal" } %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

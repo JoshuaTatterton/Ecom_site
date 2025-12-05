@@ -6,24 +6,13 @@ module Admin
       authorize :view, Currency
     end
 
-    # def new
-    #   authorize :create, Currency
-    # end
+    def create
+      authorize :create, currency
 
-    # def create
-    #   authorize :create, product
+      currency.update(CurrencyHelper::CURRENCIES[currency_iso_param])
 
-    #   if product.update(product_create_params)
-    #     redirect_to action: :index
-    #   else
-    #     render :new
-    #   end
-    # end
-
-    # def edit
-    #   @product = Currency.find(params[:id])
-    #   authorize :update, product
-    # end
+      redirect_to action: :index
+    end
 
     # def update
     #   @product = Currency.find(params[:id])
@@ -36,20 +25,20 @@ module Admin
     #   end
     # end
 
-    # def destroy
-    #   @product = Currency.find(params[:id])
-    #   authorize :delete, product
+    def destroy
+      @currency = Currency.find(params[:id])
+      authorize :remove, currency
 
-    #   product.destroy
+      currency.destroy
 
-    #   redirect_to action: :index
-    # end
+      redirect_to action: :index
+    end
 
     private
 
-    # def product_create_params
-    #   params.require(:pim_product).permit(:reference, :title, :description, :visible)
-    # end
+    def currency_iso_param
+      params.require(:currency).permit(:iso).fetch(:iso)
+    end
 
     # def product_update_params
     #   params.require(:pim_product).permit(:title, :description, :visible)
