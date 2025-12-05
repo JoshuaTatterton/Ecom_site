@@ -7,7 +7,7 @@ module Admin
     end
 
     def create
-      authorize :create, currency
+      authorize :add, currency
       authorize :update, :currency_defaults if currency_default_param
 
       currency.update(default: currency_default_param, **CurrencyHelper::CURRENCIES[currency_iso_param])
@@ -15,16 +15,14 @@ module Admin
       redirect_to action: :index
     end
 
-    # def update
-    #   @product = Currency.find(params[:id])
-    #   authorize :update, product
+    def update
+      authorize :update, :currency_defaults
+      @currency = Currency.find(params[:id])
 
-    #   if product.update(product_update_params)
-    #     redirect_to action: :index
-    #   else
-    #     render :edit
-    #   end
-    # end
+      currency.update(default: currency_default_param)
+
+      redirect_to action: :index
+    end
 
     def destroy
       @currency = Currency.find(params[:id])

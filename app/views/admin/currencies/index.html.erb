@@ -1,4 +1,4 @@
-<%= turbo_frame_tag :currencies do %>
+<%= turbo_frame_tag :currencies, data: { controller: "currencies" } do %>
   <div class="card">
     <div class="card-header hstack">
       <span class="me-auto">
@@ -7,7 +7,7 @@
 
       <% if (CurrencyHelper::CURRENCY_ISOS - currencies.pluck(:iso)).empty? %>
         <%= render "generic/buttons/new", disabled: true, tooltip: "No more Currencies to add" %>
-      <% elsif can? :create, currency %>
+      <% elsif can? :add, currency %>
         <span data-bs-toggle="modal" data-bs-target="#new_currency_modal">
           <%= render "generic/buttons/new" %>
         </span>
@@ -39,7 +39,21 @@
               <td><%= currency.code %></td>
               <td><%= currency.symbol %></td>
               <td>
-                <% if currency.default? %>
+                <% if can? :update, :currency_defaults %>
+                  <%= form_for currency,
+                      url: admin_currency_path(Switch.current_account, currency),
+                      data: { turbo: true } do |f| %>
+                    <span class="form-switch fs-5 ms-2">
+                      <%= f.check_box :default,
+                          class: "form-check-input border-dark-subtle",
+                          role: "switch",
+                          data: {
+                            action: "currencies#submitDefault",
+                            identifier: "#{currency.iso} (#{currency.symbol})"
+                          } %>
+                    </span>
+                  <% end %>
+                <% elsif currency.default? %>
                   <%= render "generic/bootstrap_icon", icon: "check-circle", type: "success" %>
                 <% end %>
               </td>
