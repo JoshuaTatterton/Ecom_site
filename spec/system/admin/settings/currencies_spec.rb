@@ -125,7 +125,7 @@ RSpec.describe "Currencies Admin", type: :system do
         # Arrange
         role = Role.create(name: "AHHHH", permissions: [
           { "resource" => "currencies", "action" => "view" },
-          { "resource" => "currencies", "action" => "add" },
+          { "resource" => "currencies", "action" => "add" }
         ])
         user = role.users.create(
           email: "test@user.com",

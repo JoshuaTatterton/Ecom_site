@@ -43,10 +43,6 @@ module Admin
       params.require(:currency).permit(:default).fetch(:default, false)
     end
 
-    # def product_update_params
-    #   params.require(:pim_product).permit(:title, :description, :visible)
-    # end
-
     def currencies
       @currencies ||= Currency.order(id: :desc)
     end
