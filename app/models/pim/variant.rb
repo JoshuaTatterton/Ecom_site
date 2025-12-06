@@ -1,8 +1,8 @@
 module Pim
-  class Product < PimRecord
+  class Variant < PimRecord
     include AccountScoped
 
-    has_many :variants, dependent: :restrict_with_error
+    belongs_to :product
 
     attr_readonly :reference
 
