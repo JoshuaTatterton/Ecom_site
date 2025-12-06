@@ -1,0 +1,20 @@
+<% if can?(:view, Role) || can?(:view, Membership) %>
+  <div class="col-4">
+    <div class="card">
+      <div class="card-header">
+        <%= render "generic/bootstrap_icon", icon: "person" %>
+        Auth
+      </div>
+
+      <div class="card-body">
+        <% if can? :view, Role %>
+          <%= link_to "Roles", admin_roles_path(Switch.current_account), class: "dropdown-item" %>
+        <% end %>
+
+        <% if can? :view, Membership %>
+          <%= link_to "Users", admin_users_path(Switch.current_account), class: "dropdown-item" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

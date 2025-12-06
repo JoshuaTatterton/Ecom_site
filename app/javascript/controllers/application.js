@@ -8,8 +8,8 @@ application.debug = false
 window.Stimulus   = application
 
 initializeTooltips()
-document.addEventListener("turbo:render", initializeTooltips)
+document.addEventListener("turbo:frame-render", initializeTooltips)
 initializeSelectCollapses()
-document.addEventListener("turbo:render", initializeSelectCollapses)
+document.addEventListener("turbo:frame-render", initializeSelectCollapses)
 
 export { application }

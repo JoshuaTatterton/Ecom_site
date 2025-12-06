@@ -1,0 +1,81 @@
+<%= turbo_frame_tag :currencies, data: { controller: "currencies" } do %>
+  <div class="card">
+    <div class="card-header hstack">
+      <span class="me-auto">
+        Currencies
+      </span>
+
+      <% if (CurrencyHelper::CURRENCY_ISOS - currencies.pluck(:iso)).empty? %>
+        <%= render "generic/buttons/new", disabled: true, tooltip: "No more Currencies to add" %>
+      <% elsif can? :add, currency %>
+        <span data-bs-toggle="modal" data-bs-target="#new_currency_modal">
+          <%= render "generic/buttons/new" %>
+        </span>
+
+        <%= render "new_modal" %>
+      <% else %>
+        <%= render "generic/buttons/new", disabled: true, tooltip: "You do not have permissions to add Currencies" %>
+      <% end %>
+    </div>
+
+    <div class="card-body">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Name:</th>
+            <th scope="col">iso:</th>
+            <th scope="col">Code:</th>
+            <th scope="col">Symbol:</th>
+            <th scope="col">Default Currency?</th>
+            <th scope="col">Actions:</th>
+          </tr>
+        </thead>
+
+        <tbody class="table-group-divider" id="currencies">
+          <% currencies.each do |currency| %>
+            <tr id="currency_<%= currency.id %>">
+              <td><%= currency.name %></td>
+              <td><%= currency.iso %></td>
+              <td><%= currency.code %></td>
+              <td><%= currency.symbol %></td>
+              <td>
+                <% if can? :update, :currency_defaults %>
+                  <%= form_for currency,
+                      url: admin_currency_path(Switch.current_account, currency),
+                      data: { turbo: true } do |f| %>
+                    <span class="form-switch fs-5 ms-2">
+                      <%= f.check_box :default,
+                          class: "form-check-input border-dark-subtle",
+                          role: "switch",
+                          data: {
+                            action: "currencies#submitDefault",
+                            identifier: "#{currency.iso} (#{currency.symbol})"
+                          } %>
+                    </span>
+                  <% end %>
+                <% elsif currency.default? %>
+                  <%= render "generic/bootstrap_icon", icon: "check-circle", type: "success" %>
+                <% end %>
+              </td>
+              <td>
+                <% if cannot? :delete, currency %>
+                  <%= render "generic/buttons/delete", disabled: true, tooltip: "You do not have permissions to delete Roles" %>
+                <% else %>
+                  <%= link_to admin_currency_path(Switch.current_account, currency.id),
+                    class: "link-underline link-underline-opacity-0",
+                    data: {
+                      turbo_method: :delete,
+                      turbo_confirm: "Are you sure you want to remove Currency: #{currency.iso} (#{currency.symbol})?"
+                    } do
+                  %>
+                    <%= render "generic/buttons/delete" %>
+                  <% end %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
