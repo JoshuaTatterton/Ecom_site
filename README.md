@@ -50,3 +50,9 @@ While inside a console you should almost always wrap your actions within the acc
 Switch.account("account_reference") {binding.pry}
 Switch.current_account # => "account_reference"
 ```
+
+### The System
+
+General setup of the different resources:
+
+<img src="./docs/overall.png" width="600">
