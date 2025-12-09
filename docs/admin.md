@@ -1,3 +1,5 @@
+### [<< Back](/README.md)
+
 # Admin
 
 (Written as though this is sorta official client documentation)
@@ -27,3 +29,7 @@ Only as an Admin User can you assign the Admin role to another user. But it is r
 ![Admin Users](./gifs/auth/admin_user.gif)
 
 </details>
+
+### [2. Product Management (PIM)](/docs/pim.md)
+### [3. Settings](/docs/settings.md)
+
