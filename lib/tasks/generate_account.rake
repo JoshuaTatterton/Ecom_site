@@ -1,4 +1,5 @@
 namespace :account do
+  # Example usage rake account:generate ACCOUNT_REFERENCE= ACCOUNT_NAME= ADMIN_USER_EMAIL=
   desc "Generate Account and associated resources"
   task generate: :environment do
     account_reference = ENV.fetch("ACCOUNT_REFERENCE")
