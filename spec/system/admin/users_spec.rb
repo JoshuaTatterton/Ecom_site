@@ -176,6 +176,13 @@ RSpec.describe "Users Admin", type: :system do
       scenario "can create a user with the administrator role" do
         # Arrange
         admin_role = Role.create(name: "Sweet Admin Role", administrator: true)
+        admin_user = admin_role.users.create(
+          name: "Admin",
+          email: "admin@email.com",
+          password: "randomlettersandnumbers",
+          awaiting_authentication: false
+        )
+        page.set_rack_session(user_id: admin_user.id)
 
         # Act
         visit new_admin_user_path(Switch.current_account)
@@ -190,8 +197,8 @@ RSpec.describe "Users Admin", type: :system do
         # Assert
         aggregate_failures do
           expect(page).to have_content("new@user.com")
-          expect(admin_role.users.count).to eq(1)
-          new_user = admin_role.users.first
+          expect(admin_role.users.count).to eq(2)
+          new_user = admin_role.users.last
           expect(new_user.email).to eq("new@user.com")
           expect(new_user.awaiting_authentication).to eq(true)
         end
@@ -201,13 +208,12 @@ RSpec.describe "Users Admin", type: :system do
     context "when creating a user as a non administrator" do
       scenario "no administrator roles appear in the select" do
         # Arrange
+        admin_role = Role.create(name: "Sweet Admin Role", administrator: true)
         non_admin_role = Role.create(name: "Non-Admin", permissions: [
           { resource: "users", action: "add" }, { resource: "users", action: "view" }
         ])
         non_admin_user = non_admin_role.users.create(email: "nonadmin@user.com")
         page.set_rack_session(user_id: non_admin_user.id)
-
-        admin_role = Role.create(name: "Sweet Admin Role", administrator: true)
 
         # Act
         visit new_admin_user_path(Switch.current_account)
@@ -216,9 +222,11 @@ RSpec.describe "Users Admin", type: :system do
         aggregate_failures do
           within("form[action='#{admin_users_path(Switch.current_account)}']") do
             within("select[name='user[role]']") do
-              expect(all("option").count).to eq 2
+              expect(all("option").count).to eq 3
               expect(all("option")[0]).to have_content("- Select -")
-              expect(all("option")[1]).to have_content(non_admin_role.name)
+              expect(all("option")[1]).to have_content(@primary_role.name)
+              expect(all("option")[2]).to have_content(non_admin_role.name)
+              expect(page).not_to have_content(admin_role.name)
             end
           end
         end
@@ -283,6 +291,15 @@ RSpec.describe "Users Admin", type: :system do
 
     scenario "displays a warning when trying to assign an admin role", js: true do
       # Arrange
+      admin_role = Role.create(name: "Sweet Admin Role", administrator: true)
+      admin_user = admin_role.users.create(
+        name: "Admin",
+        email: "admin@email.com",
+        password: "randomlettersandnumbers",
+        awaiting_authentication: false
+      )
+      page.set_rack_session(user_id: admin_user.id)
+
       role = Role.create(name: "Old Role", permissions: [])
       user = role.users.create(email: "some@user.com")
 
