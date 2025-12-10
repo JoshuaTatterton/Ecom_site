@@ -288,5 +288,18 @@ RSpec.describe "Currencies Admin", type: :system do
         end
       end
     end
+
+    scenario "cannot remove the default currency" do
+      # Arrange
+      usd = Currency.create(**CurrencyHelper::CURRENCIES["USD"], default: true)
+
+      # Act
+      visit admin_currencies_path(Switch.current_account)
+
+      # Assert
+      within("tr#currency_#{usd.id}") do
+        expect(page).not_to have_selector("a[href='#{admin_currency_path(Switch.current_account, usd.id)}']")
+      end
+    end
   end
 end

@@ -1,16 +1,16 @@
 # Ecom Portal
 
-In lieu of any ideas of anything to build, I'm just rebuilding an ecom platform I have worked on before but with blackjack and hookers. ¯\\_(ツ)_/¯
+In lieu of any ideas of anything to build, I'm just rebuilding an ecom platform but with blackjack and hookers. ¯\\_(ツ)_/¯
 
 Plans:
-
-  - Rails B/E
+  - Rails B/E & Admin
   - Jsonapi resource api
   - Graphql api (? maybe)
   - Kafka (microservice "synergy")
 
 Features:
   - PIM
+  - Auth
   - CMS
   - Carts
   - OMS
@@ -21,6 +21,12 @@ Admin Panel/Portal:
   - Turbo
   - Bootstrap
   - Mini React apps (complicated forms, promotions flashbacks)
+
+[Api Docs]() (Coming Soon)
+
+[See Admin](/docs/admin.md)
+
+![Base Admin Page](docs/base_admin.png)
 
 ### Booting
 
