@@ -66,7 +66,7 @@ group :development, :test do
 
   gem "strong_migrations", "~> 2.5.1"
 
-  gem "dotenv", "~> 3.1"
+  gem "dotenv", "~> 3.2"
 end
 
 group :development do
