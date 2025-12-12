@@ -106,5 +106,23 @@ RSpec.describe Pim::Product, type: :model do
         expect(product.visible).to eq(false)
       end
     end
+
+    describe "#variants" do
+      it "blocks deletion" do
+        # Arrange
+        product = Pim::Product.create(reference: "product", title: "Product")
+        variant = product.variants.create(reference: "variant", title: "Variant")
+
+        # Act
+        product.destroy
+
+        # Assert
+        aggregate_failures do
+          expect(Pim::Product.find(product.id)).to be_persisted
+          expect(variant.reload).to be_persisted
+          expect(product.errors).to be_added(:base, :"restrict_dependent_destroy.has_many", record: "variants")
+        end
+      end
+    end
   end
 end
