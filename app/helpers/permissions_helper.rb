@@ -1,9 +1,7 @@
 module PermissionsHelper
   PRODUCT_PERMISSIONS = [
     { "resource" => "products", "action" => "view" }, { "resource" => "products", "action" => "create" },
-    { "resource" => "products", "action" => "update" }, { "resource" => "products", "action" => "delete" },
-    { "resource" => "variants", "action" => "view" }, { "resource" => "variants", "action" => "create" },
-    { "resource" => "variants", "action" => "update" }, { "resource" => "variants", "action" => "delete" }
+    { "resource" => "products", "action" => "update" }, { "resource" => "products", "action" => "delete" }
   ]
   AUTH_PERMISSIONS = [
     { "resource" => "users", "action" => "view" }, { "resource" => "users", "action" => "add" },
