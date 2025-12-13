@@ -79,10 +79,12 @@ CREATE TABLE public.variants (
     account_reference character varying NOT NULL,
     reference character varying NOT NULL,
     product_id bigint NOT NULL,
+    "position" integer NOT NULL,
     title character varying NOT NULL,
     visible boolean DEFAULT false NOT NULL,
     created_at timestamp(6) without time zone NOT NULL,
-    updated_at timestamp(6) without time zone NOT NULL
+    updated_at timestamp(6) without time zone NOT NULL,
+    CONSTRAINT variants_position_not_negative CHECK (("position" >= 0))
 );
 
 

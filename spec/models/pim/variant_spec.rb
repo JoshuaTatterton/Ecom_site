@@ -96,12 +96,12 @@ RSpec.describe Pim::Variant, type: :model do
     describe "#title" do
       it "is required" do
         # Act
-        product = Pim::Variant.new
+        variant = Pim::Variant.new
 
         # Assert
         aggregate_failures do
-          expect(product).to be_invalid
-          expect(product.errors).to be_added(:title, :blank)
+          expect(variant).to be_invalid
+          expect(variant.errors).to be_added(:title, :blank)
         end
       end
     end
@@ -131,6 +131,37 @@ RSpec.describe Pim::Variant, type: :model do
         aggregate_failures do
           expect(variant).to be_invalid
           expect(variant.errors).to be_added(:product, :blank)
+        end
+      end
+    end
+
+    describe "#position" do
+      it "is defaulted to 0 as the only product variant" do
+        # Arrange
+        product = Pim::Product.create(reference: "product", title: "Product")
+
+        # Act
+        variant = Pim::Variant.new(reference: "variant", title: "Variant", product: product)
+
+        # Assert
+        aggregate_failures do
+          expect(variant).to be_valid
+          expect(variant.position).to eq(0)
+        end
+      end
+
+      it "is defaulted to the variant count on the product" do
+        # Arrange
+        product = Pim::Product.create(reference: "product", title: "Product")
+        3.times { |i| product.variants.create(reference: "v#{i}", title: "V#{i}") }
+
+        # Act
+        variant = product.variants.new(reference: "variant", title: "Variant")
+
+        # Assert
+        aggregate_failures do
+          expect(variant).to be_valid
+          expect(variant.position).to eq(3)
         end
       end
     end

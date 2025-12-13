@@ -7,6 +7,8 @@ class AddVariants < ActiveRecord::Migration[8.1]
       t.string :reference, null: false
       t.belongs_to :product, null: false
 
+      t.integer :position, null: false
+
       t.string :title, null: false
       t.boolean :visible, null: false, default: false
 
@@ -18,5 +20,7 @@ class AddVariants < ActiveRecord::Migration[8.1]
       unique: true,
       name: "unique_account_variant_references",
       algorithm: :concurrently
+
+    add_check_constraint :variants,  "position >= 0", name: "variants_position_not_negative"
   end
 end
