@@ -17,6 +17,7 @@ module PermissionsHelper
 
   RESOURCE_MAP = {
     "products" => Pim::Product,
+    "variants" => Pim::Variant,
     "roles" => Role,
     "users" => Membership,
     "user_roles" => Membership,

@@ -10,6 +10,38 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: increase_duplicate_variant_positions(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.increase_duplicate_variant_positions() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+      BEGIN
+        IF
+          OLD.position IS DISTINCT FROM NEW.position
+        AND
+          EXISTS (
+            select 1
+            FROM variants
+            WHERE product_id = NEW.product_id
+            AND position = NEW.position
+            AND id != NEW.id
+            LIMIT 1
+          )
+        THEN
+          UPDATE variants
+          SET
+            position = position + 1
+          WHERE product_id = NEW.product_id
+          AND position >= NEW.position
+          AND id != NEW.id;
+        END IF;
+        RETURN NEW;
+      END;
+      $$;
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -71,10 +103,54 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: variants; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.variants (
+    id bigint NOT NULL,
+    account_reference character varying NOT NULL,
+    reference character varying NOT NULL,
+    product_id bigint NOT NULL,
+    "position" integer NOT NULL,
+    title character varying NOT NULL,
+    visible boolean DEFAULT false NOT NULL,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL,
+    CONSTRAINT variants_position_not_negative CHECK (("position" >= 0))
+);
+
+
+--
+-- Name: variants_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.variants_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: variants_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.variants_id_seq OWNED BY public.variants.id;
+
+
+--
 -- Name: products id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.products ALTER COLUMN id SET DEFAULT nextval('public.products_id_seq'::regclass);
+
+
+--
+-- Name: variants id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.variants ALTER COLUMN id SET DEFAULT nextval('public.variants_id_seq'::regclass);
 
 
 --
@@ -102,10 +178,39 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: variants variants_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.variants
+    ADD CONSTRAINT variants_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: index_variants_on_product_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_variants_on_product_id ON public.variants USING btree (product_id);
+
+
+--
 -- Name: unique_account_product_references; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX unique_account_product_references ON public.products USING btree (account_reference, reference);
+
+
+--
+-- Name: unique_account_variant_references; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX unique_account_variant_references ON public.variants USING btree (account_reference, reference);
+
+
+--
+-- Name: variants variants_position_clash_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER variants_position_clash_trigger AFTER INSERT OR UPDATE ON public.variants FOR EACH ROW EXECUTE FUNCTION public.increase_duplicate_variant_positions();
 
 
 --
@@ -115,5 +220,7 @@ CREATE UNIQUE INDEX unique_account_product_references ON public.products USING b
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251213221523'),
+('20251206213834'),
 ('20251128191922');
 

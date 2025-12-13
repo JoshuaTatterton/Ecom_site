@@ -1,8 +1,8 @@
-# One per account record containing the system level config (not to be modified by Users)
-# e.g. database configs or account feature toggles
 module Pim
   class Product < PimRecord
     include AccountScoped
+
+    has_many :variants, dependent: :restrict_with_error
 
     attr_readonly :reference
 
