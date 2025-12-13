@@ -10,6 +10,38 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+--
+-- Name: increase_duplicate_variant_positions(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.increase_duplicate_variant_positions() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+      BEGIN
+        IF
+          OLD.position IS DISTINCT FROM NEW.position
+        AND
+          EXISTS (
+            select 1
+            FROM variants
+            WHERE product_id = NEW.product_id
+            AND position = NEW.position
+            AND id != NEW.id
+            LIMIT 1
+          )
+        THEN
+          UPDATE variants
+          SET
+            position = position + 1
+          WHERE product_id = NEW.product_id
+          AND position >= NEW.position
+          AND id != NEW.id;
+        END IF;
+        RETURN NEW;
+      END;
+      $$;
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -175,12 +207,20 @@ CREATE UNIQUE INDEX unique_account_variant_references ON public.variants USING b
 
 
 --
+-- Name: variants variants_position_clash_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER variants_position_clash_trigger AFTER INSERT OR UPDATE ON public.variants FOR EACH ROW EXECUTE FUNCTION public.increase_duplicate_variant_positions();
+
+
+--
 -- PostgreSQL database dump complete
 --
 
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251213221523'),
 ('20251206213834'),
 ('20251128191922');
 
