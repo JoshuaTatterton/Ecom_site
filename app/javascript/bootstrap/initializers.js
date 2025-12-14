@@ -47,3 +47,9 @@ export const initializeSelectCollapses = (event = dummyEvent) => {
     })
   })
 }
+
+// Tabs
+export const initializeTabs = (event = dummyEvent) => {
+  const tabTriggerList = event.target.querySelectorAll("[data-bs-toggle='tab']")
+  const tabList = [...tabTriggerList].map(tabTriggerEl => new bootstrap.Tab(tabTriggerEl))
+}

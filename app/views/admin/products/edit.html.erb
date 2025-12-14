@@ -9,6 +9,66 @@
   </ol>
 </nav>
 
-<%= form_for product, url: admin_product_path(Switch.current_account, product.id) do |f| %>
-  <%= render "form", f: f, type: "Update" %>
-<% end %>
+<div class="card mb-3">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs" role="tablist">
+      <li class="nav-item">
+        <a
+          class="link-dark nav-link nav-tabs show active"
+          data-bs-toggle="tab" data-bs-target="#product-pane"
+          role="tab" href="#product"
+        >
+          Product
+        </a>
+      </li>
+      <li class="nav-item">
+        <% if can? :view, Pim::Variant %>
+          <a
+            class="link-dark nav-link nav-tabs"
+            data-bs-toggle="tab" data-bs-target="#variants-pane"
+            role="tab" href="#variants"
+          >
+            Variants
+          </a>
+        <% else %>
+          <span data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="You do not have permissions to view Variants">
+            <a
+              class="nav-link nav-tabs disabled"
+              role="tab" href="#variants"
+            >
+              Variants
+            </a>
+          </span>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+
+  <div class="tab-content">
+    <div class="tab-pane show active" id="product-pane" role="tabpanel" aria-labelledby="product-pane">
+      <%= form_for product, url: admin_product_path(Switch.current_account, product.id) do |f| %>
+        <%= render "form", f: f, type: "Update" %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if can? :view, Pim::Variant %>
+    <div class="tab-content">
+      <div class="tab-pane" id="variants-pane" role="tabpanel" aria-labelledby="variants-pane">
+        <div class="card-body">
+          <%= render "admin/variants/table", variants: product.variants.order(position: :asc) %>
+        </div>
+
+        <div class="card-footer">
+          <% if can? :create, Pim::Variant %>
+            <%= link_to new_admin_product_variant_path(Switch.current_account, product) do %>
+              <%= render "generic/buttons/new" %>
+            <% end %>
+          <% else %>
+            <%= render "generic/buttons/new", disabled: true, tooltip: "You do not have permissions to create Variants" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

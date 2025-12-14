@@ -1,5 +1,5 @@
 import { Application } from "@hotwired/stimulus"
-import { initializeTooltips, initializeSelectCollapses } from "bootstrap/initializers"
+import { initializeTooltips, initializeSelectCollapses, initializeTabs } from "bootstrap/initializers"
 
 const application = Application.start()
 
@@ -11,5 +11,7 @@ initializeTooltips()
 document.addEventListener("turbo:frame-render", initializeTooltips)
 initializeSelectCollapses()
 document.addEventListener("turbo:frame-render", initializeSelectCollapses)
+initializeTabs()
+document.addEventListener("turbo:frame-render", initializeTabs)
 
 export { application }

@@ -1,0 +1,51 @@
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Title:</th>
+      <th scope="col">Reference:</th>
+      <th scope="col">Visible:</th>
+      <th scope="col">Last Updated:</th>
+      <th scope="col">Actions:</th>
+    </tr>
+  </thead>
+
+  <tbody class="table-group-divider" id="variants">
+    <% variants.each do |variant| %>
+      <tr id="variant_<%= variant.id %>">
+        <td><%= variant.title %></td>
+        <td><%= variant.reference %></td>
+        <td>
+          <% if variant.visible? %>
+            <%= render "generic/bootstrap_icon", icon: "check-circle", type: "success" %>
+          <% else %>
+            <%= render "generic/bootstrap_icon", icon: "ban", type: "danger" %>
+          <% end %>
+        </td>
+        <td><%= variant.updated_at %></td>
+        <td>
+          <% if cannot? :update, variant %>
+            <%= render "generic/buttons/edit", disabled: true, tooltip: "You do not have permissions to edit Variants" %>
+          <% else %>
+            <%= link_to edit_admin_product_variant_path(Switch.current_account, variant.product_id, variant.id), class: "link-underline link-underline-opacity-0" do %>
+              <%= render "generic/buttons/edit" %>
+            <% end %>
+          <% end %>
+
+          <% if cannot? :delete, variant %>
+            <%= render "generic/buttons/delete", disabled: true, tooltip: "You do not have permissions to delete Variants" %>
+          <% else %>
+            <%= link_to admin_product_variant_path(Switch.current_account, variant.product_id, variant.id),
+              class: "link-underline link-underline-opacity-0",
+              data: {
+                turbo_method: :delete,
+                turbo_confirm: "Are you sure you want to delete Variant: #{variant.reference}?"
+              } do
+            %>
+              <%= render "generic/buttons/delete" %>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

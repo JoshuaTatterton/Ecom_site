@@ -10,5 +10,12 @@
 </nav>
 
 <%= form_for product, url: admin_products_path(Switch.current_account) do |f| %>
-  <%= render "form", f: f, type: "Create" %>
+  <div class="card mb-3">
+    <div class="card-header">
+      Product
+    </div>
+
+    <%= render "form", f: f, type: "Create" %>
+
+  </div>
 <% end %>
