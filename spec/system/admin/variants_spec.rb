@@ -75,7 +75,7 @@ RSpec.describe "Variants Admin", type: :system do
   end
 
   describe "#update" do
-    scenario "can update a product" do
+    scenario "can update a variant" do
       # Arrange
       product = Pim::Product.create(title: "Top", reference: "top")
       variant = product.variants.create(title: "Lagre", reference: "top_l", visible: true, position: 0)
@@ -100,6 +100,27 @@ RSpec.describe "Variants Admin", type: :system do
         expect(variant.reload.title).to eq(new_title)
         expect(variant.visible).to eq(false)
         expect(variant.position).to eq(new_position)
+      end
+    end
+  end
+
+  describe "#destroy" do
+    scenario "can destroy a variant" do
+      # Arrange
+      product = Pim::Product.create(title: "Sweet", reference: "sweet")
+      variant = product.variants.create(title: "Large", reference: "top_l")
+
+      visit admin_product_variants_path(Switch.current_account, product)
+
+      # Act
+      within("tr#variant_#{variant.id}") do
+        find("a[href='#{admin_product_variant_path(Switch.current_account, product, variant)}']").click
+      end
+
+      # Assert
+      aggregate_failures do
+        expect(page).not_to have_content(variant.title)
+        expect(Pim::Variant.find_by(id: variant.id)).to eq(nil)
       end
     end
   end

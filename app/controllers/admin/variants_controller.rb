@@ -38,14 +38,14 @@ module Admin
       end
     end
 
-    # def destroy
-    #   @product = Pim::Product.find(params[:id])
-    #   authorize :delete, product
+    def destroy
+      @variant = product.variants.find(params[:id])
+      authorize :delete, variant
 
-    #   product.destroy
+      variant.destroy
 
-    #   redirect_to action: :index
-    # end
+      redirect_to action: :index
+    end
 
     private
 
