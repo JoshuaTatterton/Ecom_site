@@ -89,47 +89,71 @@ RSpec.describe "Products Admin", type: :system do
       end
     end
 
-    scenario "can view variants" do
-      # Arrange
-      product = Pim::Product.create(title: "Top", reference: "top", visible: true)
-      s_variant = product.variants.create(
-        reference: "top_small", title: "Small",
-        position: 0
-      )
-      l_variant = product.variants.create(
-        reference: "top_large", title: "Large",
-        visible: true, position: 1
-      )
+    context "within variants tab" do
+      scenario "can view variants" do
+        # Arrange
+        product = Pim::Product.create(title: "Top", reference: "top", visible: true)
+        s_variant = product.variants.create(
+          reference: "top_small", title: "Small",
+          position: 0
+        )
+        l_variant = product.variants.create(
+          reference: "top_large", title: "Large",
+          visible: true, position: 1
+        )
 
-      visit edit_admin_product_path(Switch.current_account, product.id)
+        visit edit_admin_product_path(Switch.current_account, product.id)
 
-      # Act
-      find("a[data-bs-target='#variants-pane']").click
+        # Act
+        find("a[data-bs-target='#variants-pane']").click
 
-      # Assert
-      aggregate_failures do
-        within("#variants-pane") do
-          within("tbody#variants") do
-            within("tr:nth-child(1)") do
-              expect(page).to have_content(s_variant.title)
-              expect(page).to have_content(s_variant.reference)
-              expect(page).not_to have_selector("svg.bi-check-circle")
-              expect(page).to have_selector("svg.bi-ban")
-              edit_path = edit_admin_product_variant_path(Switch.current_account, product, s_variant)
-              expect(page).to have_selector("a[href='#{edit_path}']")
-              delete_path = admin_product_variant_path(Switch.current_account, product, s_variant)
-              expect(page).to have_selector("a[href='#{delete_path}'][data-turbo-method='delete']")
+        # Assert
+        aggregate_failures do
+          within("#variants-pane") do
+            variants_path = admin_product_variants_path(Switch.current_account, product)
+            expect(page).not_to have_selector("a[href='#{variants_path}']")
+
+            within("tbody#variants") do
+              within("tr:nth-child(1)") do
+                expect(page).to have_content(s_variant.title)
+                expect(page).to have_content(s_variant.reference)
+                expect(page).not_to have_selector("svg.bi-check-circle")
+                expect(page).to have_selector("svg.bi-ban")
+                edit_path = edit_admin_product_variant_path(Switch.current_account, product, s_variant)
+                expect(page).to have_selector("a[href='#{edit_path}']")
+                delete_path = admin_product_variant_path(Switch.current_account, product, s_variant)
+                expect(page).to have_selector("a[href='#{delete_path}'][data-turbo-method='delete']")
+              end
+              within("tr:nth-child(2)") do
+                expect(page).to have_content(l_variant.title)
+                expect(page).to have_content(l_variant.reference)
+                expect(page).to have_selector("svg.bi-check-circle")
+                expect(page).not_to have_selector("svg.bi-ban")
+                edit_path = edit_admin_product_variant_path(Switch.current_account, product, l_variant)
+                expect(page).to have_selector("a[href='#{edit_path}']")
+                delete_path = admin_product_variant_path(Switch.current_account, product, l_variant)
+                expect(page).to have_selector("a[href='#{delete_path}'][data-turbo-method='delete']")
+              end
             end
-            within("tr:nth-child(2)") do
-              expect(page).to have_content(l_variant.title)
-              expect(page).to have_content(l_variant.reference)
-              expect(page).to have_selector("svg.bi-check-circle")
-              expect(page).not_to have_selector("svg.bi-ban")
-              edit_path = edit_admin_product_variant_path(Switch.current_account, product, l_variant)
-              expect(page).to have_selector("a[href='#{edit_path}']")
-              delete_path = admin_product_variant_path(Switch.current_account, product, l_variant)
-              expect(page).to have_selector("a[href='#{delete_path}'][data-turbo-method='delete']")
-            end
+          end
+        end
+      end
+
+      scenario "links to variants admin, when more than 5 variants" do
+        # Arrange
+        product = Pim::Product.create(title: "Top", reference: "top", visible: true)
+        6.times { |i| product.variants.create(title: i, reference: i) }
+
+        visit edit_admin_product_path(Switch.current_account, product.id)
+
+        # Act
+        find("a[data-bs-target='#variants-pane']").click
+
+        # Assert
+        aggregate_failures do
+          within("#variants-pane") do
+            variants_path = admin_product_variants_path(Switch.current_account, product)
+            expect(page).to have_selector("a[href='#{variants_path}']")
           end
         end
       end

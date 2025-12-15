@@ -56,7 +56,11 @@
     <div class="tab-content">
       <div class="tab-pane" id="variants-pane" role="tabpanel" aria-labelledby="variants-pane">
         <div class="card-body">
-          <%= render "admin/variants/table", variants: product.variants.order(position: :asc) %>
+          <%= render "admin/variants/table", variants: product.variants.order(position: :asc).limit(5) %>
+
+          <% if product.variants.count > 5 %>
+            <%= link_to "View more", admin_product_variants_path(Switch.current_account, product) %>
+          <% end %>
         </div>
 
         <div class="card-footer">
