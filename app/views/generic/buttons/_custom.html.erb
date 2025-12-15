@@ -1,0 +1,10 @@
+<% icon ||= nil %>
+<% style ||= nil %>
+<% disabled ||= false %>
+<% tooltip ||= nil %>
+
+<%= content_tag :span, class: "d-inline-block", data: { bs_toggle: "tooltip", bs_placement: "bottom", bs_title: tooltip } do %>
+  <button type="button" class="btn btn-<%= disabled ? "secondary" : style %>" <%= "disabled" if disabled %> >
+    <%= render "generic/bootstrap_icon", icon: icon %>
+  </button>
+<% end %>

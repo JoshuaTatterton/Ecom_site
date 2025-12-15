@@ -14,17 +14,21 @@ RSpec.describe "Products Admin", type: :system do
           within("tr:nth-child(1)") do
             expect(page).to have_content(sour_product.title)
             expect(page).to have_content(sour_product.reference)
-            edit_path = edit_admin_product_path(Switch.current_account, sour_product.id)
+            edit_path = edit_admin_product_path(Switch.current_account, sour_product)
             expect(page).to have_selector("a[href='#{edit_path}']")
-            delete_path = admin_product_path(Switch.current_account, sour_product.id)
+            variants_path = admin_product_variants_path(Switch.current_account, sour_product)
+            expect(page).to have_selector("a[href='#{variants_path}']")
+            delete_path = admin_product_path(Switch.current_account, sour_product)
             expect(page).to have_selector("a[href='#{delete_path}'][data-turbo-method='delete']")
           end
           within("tr:nth-child(2)") do
             expect(page).to have_content(sweet_product.title)
             expect(page).to have_content(sweet_product.reference)
-            edit_path = edit_admin_product_path(Switch.current_account, sweet_product.id)
+            edit_path = edit_admin_product_path(Switch.current_account, sweet_product)
             expect(page).to have_selector("a[href='#{edit_path}']")
-            delete_path = admin_product_path(Switch.current_account, sweet_product.id)
+            variants_path = admin_product_variants_path(Switch.current_account, sweet_product)
+            expect(page).to have_selector("a[href='#{variants_path}']")
+            delete_path = admin_product_path(Switch.current_account, sweet_product)
             expect(page).to have_selector("a[href='#{delete_path}'][data-turbo-method='delete']")
           end
         end
