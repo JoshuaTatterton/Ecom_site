@@ -1,0 +1,26 @@
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" aria-current="page">
+      <%= link_to "Products", admin_products_path(Switch.current_account) %>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <%= link_to product.reference, edit_admin_product_path(Switch.current_account, product) %>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <%= link_to "Variants", admin_product_variants_path(Switch.current_account, product) %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <%= variant.reference %>
+    </li>
+  </ol>
+</nav>
+
+<%= form_for variant, url: admin_product_variant_path(Switch.current_account, product, variant) do |f| %>
+  <div class="card mb-3">
+    <div class="card-header">
+      Variant
+    </div>
+
+    <%= render "form", f: f, type: "Update" %>
+  </div>
+<% end %>

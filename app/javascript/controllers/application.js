@@ -1,5 +1,5 @@
 import { Application } from "@hotwired/stimulus"
-import { initializeTooltips, initializeSelectCollapses, initializeTabs } from "bootstrap/initializers"
+import { initializeTooltips, initializeSelectCollapses, initializeValueCollapses, initializeTabs } from "bootstrap/initializers"
 
 const application = Application.start()
 
@@ -8,10 +8,12 @@ application.debug = false
 window.Stimulus   = application
 
 initializeTooltips()
-document.addEventListener("turbo:frame-render", initializeTooltips)
+document.addEventListener("turbo:render", initializeTooltips)
 initializeSelectCollapses()
-document.addEventListener("turbo:frame-render", initializeSelectCollapses)
+document.addEventListener("turbo:render", initializeSelectCollapses)
+initializeValueCollapses()
+document.addEventListener("turbo:render", initializeValueCollapses)
 initializeTabs()
-document.addEventListener("turbo:frame-render", initializeTabs)
+document.addEventListener("turbo:render", initializeTabs)
 
 export { application }

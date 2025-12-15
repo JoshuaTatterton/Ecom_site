@@ -33,10 +33,9 @@ export const initializeSelectCollapses = (event = dummyEvent) => {
       }
     })
 
-
     // Add event listener
     collapseEl.addEventListener("change", (e) => {
-      const selector = e.target.querySelector(`[value='${e.target.value}']`).getAttribute('data-bs-target')
+      const selector = e.target.querySelector(`[value='${e.target.value}']`).getAttribute("data-bs-target")
 
       if (!!selector) {
         collapseObjects[selector].show()
@@ -45,6 +44,30 @@ export const initializeSelectCollapses = (event = dummyEvent) => {
       const unusedSelectors = Object.keys(collapseObjects).filter((s) => s !== selector )
       unusedSelectors.forEach((s) => collapseObjects[s].hide())
     })
+  })
+}
+
+export const initializeValueCollapses = (event = dummyEvent) => {
+  const collapseElementList = event.target.querySelectorAll("input[data-bs-toggle='value_collapse']")
+
+  collapseElementList.forEach(collapseEl => {
+    const target = collapseEl.getAttribute("data-bs-target")
+    const targetEls = document.querySelectorAll(target)
+    const valuesAttr = collapseEl.getAttribute("data-bs-values")
+
+    if (!!targetEls && !!valuesAttr) {
+      const values = valuesAttr.split(",")
+      const collapseTargets = [...targetEls].map((el) => new bootstrap.Collapse(el, { toggle: false }))
+
+      // Add event listener
+      collapseEl.addEventListener("change", (e) => {
+        if (values.includes(e.target.value)) {
+          collapseTargets.forEach((target) => target.show())
+        } else {
+          collapseTargets.forEach((target) => target.hide())
+        }
+      })
+    }
   })
 }
 

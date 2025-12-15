@@ -19,7 +19,7 @@
     </span>
 
     <% if can? :create, product %>
-      <%= link_to new_admin_product_path(Switch.current_account) do %>
+      <%= link_to new_admin_product_variant_path(Switch.current_account, product) do %>
         <%= render "generic/buttons/new" %>
       <% end %>
     <% else %>
