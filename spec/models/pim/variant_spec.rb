@@ -196,6 +196,19 @@ RSpec.describe Pim::Variant, type: :model do
       end
     end
 
+    describe "#position" do
+      it "must be greater than 0" do
+        # Act
+        variant = Pim::Variant.new(position: -1)
+
+        # Assert
+        aggregate_failures do
+          expect(variant).to be_invalid
+          expect(variant.errors).to be_added(:position, :greater_than_or_equal_to, value: -1, count: 0)
+        end
+      end
+    end
+
     describe "#product" do
       it "is required" do
         # Act

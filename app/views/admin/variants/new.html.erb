@@ -3,19 +3,24 @@
     <li class="breadcrumb-item" aria-current="page">
       <%= link_to "Products", admin_products_path(Switch.current_account) %>
     </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <%= link_to product.reference, edit_admin_product_path(Switch.current_account, product) %>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <%= link_to "Variants", admin_product_variants_path(Switch.current_account, product) %>
+    </li>
     <li class="breadcrumb-item active" aria-current="page">
       New
     </li>
   </ol>
 </nav>
 
-<%= form_for product, url: admin_products_path(Switch.current_account) do |f| %>
+<%= form_for variant, url: admin_product_variants_path(Switch.current_account, product) do |f| %>
   <div class="card mb-3">
     <div class="card-header">
-      Product
+      Variant
     </div>
 
     <%= render "form", f: f, type: "Create" %>
-
   </div>
 <% end %>

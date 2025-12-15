@@ -21,6 +21,6 @@ class AddVariants < ActiveRecord::Migration[8.1]
       name: "unique_account_variant_references",
       algorithm: :concurrently
 
-    add_check_constraint :variants,  "position >= 0", name: "variants_position_not_negative"
+    add_check_constraint :variants, "position >= 0", name: "variants_position_not_negative"
   end
 end

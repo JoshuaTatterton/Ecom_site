@@ -34,15 +34,27 @@
               <% if cannot? :update, product %>
                 <%= render "generic/buttons/edit", disabled: true, tooltip: "You do not have permissions to edit Products" %>
               <% else %>
-                <%= link_to edit_admin_product_path(Switch.current_account, product.id), class: "link-underline link-underline-opacity-0" do %>
+                <%= link_to edit_admin_product_path(Switch.current_account, product), class: "link-underline link-underline-opacity-0" do %>
                   <%= render "generic/buttons/edit" %>
+                <% end %>
+              <% end %>
+
+              <% if cannot? :view, :variants %>
+                <%= render "generic/buttons/custom",
+                  icon: "tags", style: "info",
+                  disabled: true, tooltip: "You do not have permissions to view Variants" %>
+              <% else %>
+                <%= link_to admin_product_variants_path(Switch.current_account, product), class: "link-underline link-underline-opacity-0" do %>
+                  <%= render "generic/buttons/custom", icon: "tags", style: "info" %>
                 <% end %>
               <% end %>
 
               <% if cannot? :delete, product %>
                 <%= render "generic/buttons/delete", disabled: true, tooltip: "You do not have permissions to delete Products" %>
+              <% elsif product.variants.any? %>
+                <%= render "generic/buttons/delete", disabled: true, tooltip: "Cannot delete a product with variants" %>
               <% else %>
-                <%= link_to admin_product_path(Switch.current_account, product.id),
+                <%= link_to admin_product_path(Switch.current_account, product),
                   class: "link-underline link-underline-opacity-0",
                   data: {
                     turbo_method: :delete,

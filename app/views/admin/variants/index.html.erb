@@ -1,0 +1,37 @@
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item" aria-current="page">
+      <%= link_to "Products", admin_products_path(Switch.current_account) %>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <%= link_to product.reference, edit_admin_product_path(Switch.current_account, product) %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Variants
+    </li>
+  </ol>
+</nav>
+
+<div class="card">
+  <div class="card-header hstack">
+    <span class="me-auto">
+      Variants
+    </span>
+
+    <% if can? :create, product %>
+      <%= link_to new_admin_product_variant_path(Switch.current_account, product) do %>
+        <%= render "generic/buttons/new" %>
+      <% end %>
+    <% else %>
+      <%= render "generic/buttons/new", disabled: true, tooltip: "You do not have permissions to create Products" %>
+    <% end %>
+  </div>
+
+  <div class="card-body">
+    <%= render "admin/variants/table" %>
+  </div>
+
+  <div class="card-footer">
+    <%= render "generic/pagination" %>
+  </div>
+</div>
