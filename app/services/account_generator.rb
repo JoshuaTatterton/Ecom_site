@@ -7,9 +7,10 @@
 #   - User (Soon)
 #   - Role (Soon)
 class AccountGenerator
-  def initialize(reference:, name: nil)
+  def initialize(reference:, name: nil, email:)
     @account_reference = reference
     @account_name = name || reference.camelize
+    @user_email = email
   end
 
   def call!
@@ -18,6 +19,15 @@ class AccountGenerator
     Account.transaction do
       account.save!
       AccountSetting.create!(account: account)
+      Switch.account(account.reference) do
+        role = Role.create!(name: "Admin", administrator: true)
+        @user = User.find_or_initialize_by(email: @user_email)
+        role.memberships.create!(user: @user)
+      end
+    end
+
+    Switch.account(account.reference) do
+      UserSignUpJob.perform_async(@user.id) if @user.previously_new_record?
     end
   end
 end

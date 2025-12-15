@@ -66,7 +66,7 @@ group :development, :test do
 
   gem "strong_migrations", "~> 2.5.1"
 
-  gem "dotenv", "~> 3.1"
+  gem "dotenv", "~> 3.2"
 end
 
 group :development do
@@ -79,7 +79,7 @@ group :test do
   gem "rspec-rails", "~> 8.0"
   gem "rspec-sidekiq", "~> 5.2"
   gem "capybara", "~> 3.40"
-  gem "selenium-webdriver", "~> 4.8"
+  gem "selenium-webdriver", "~> 4.39"
   gem "database_cleaner-active_record", "~> 2.2"
   gem "rack_session_access", "~> 0.2.0"
 end
