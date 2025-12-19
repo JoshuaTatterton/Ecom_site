@@ -3,6 +3,7 @@ module Pim
     include AccountScoped
 
     belongs_to :product
+    has_many :prices
 
     attr_readonly :reference
 
