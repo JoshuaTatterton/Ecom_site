@@ -256,6 +256,20 @@ ALTER TABLE ONLY public.variants
 
 
 --
+-- Name: active_price_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX active_price_index ON public.prices USING btree (variant_id, active_during);
+
+
+--
+-- Name: discounted_price_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX discounted_price_index ON public.prices USING btree (variant_id, was_amount);
+
+
+--
 -- Name: index_prices_on_currency_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -274,6 +288,13 @@ CREATE INDEX index_prices_on_variant_id ON public.prices USING btree (variant_id
 --
 
 CREATE INDEX index_variants_on_product_id ON public.variants USING btree (product_id);
+
+
+--
+-- Name: price_ordering_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX price_ordering_index ON public.prices USING btree (variant_id, starts_at, ends_at);
 
 
 --
@@ -318,6 +339,7 @@ CREATE TRIGGER variants_position_clash_trigger AFTER INSERT OR UPDATE ON public.
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251220190848'),
 ('20251219212004'),
 ('20251213221523'),
 ('20251206213834'),
