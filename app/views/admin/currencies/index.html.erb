@@ -62,6 +62,8 @@
                   <%= render "generic/buttons/delete", disabled: true, tooltip: "You do not have permissions to delete Currencies" %>
                 <% elsif currency.default? %>
                   <%= render "generic/buttons/delete", disabled: true, tooltip: "The default Currency cannot be deleted" %>
+                <% elsif currency.prices.any? %>
+                  <%= render "generic/buttons/delete", disabled: true, tooltip: "In use Currency cannot be deleted" %>
                 <% else %>
                   <%= link_to admin_currency_path(Switch.current_account, currency.id),
                     class: "link-underline link-underline-opacity-0",

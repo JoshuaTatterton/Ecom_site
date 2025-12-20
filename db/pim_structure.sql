@@ -42,6 +42,23 @@ CREATE FUNCTION public.increase_duplicate_variant_positions() RETURNS trigger
       $$;
 
 
+--
+-- Name: maintain_price_active_during(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.maintain_price_active_during() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+      BEGIN
+        UPDATE prices
+        SET
+          active_during = tsrange(NEW.starts_at, NEW.ends_at, '[]')
+        WHERE id = NEW.id;
+        RETURN NEW;
+      END;
+      $$;
+
+
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -56,6 +73,44 @@ CREATE TABLE public.ar_internal_metadata (
     created_at timestamp(6) without time zone NOT NULL,
     updated_at timestamp(6) without time zone NOT NULL
 );
+
+
+--
+-- Name: prices; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.prices (
+    id bigint NOT NULL,
+    account_reference character varying NOT NULL,
+    variant_id bigint NOT NULL,
+    currency_id bigint NOT NULL,
+    amount integer NOT NULL,
+    was_amount integer,
+    starts_at timestamp(0) without time zone NOT NULL,
+    ends_at timestamp(0) without time zone NOT NULL,
+    active_during tsrange,
+    created_at timestamp(6) without time zone NOT NULL,
+    updated_at timestamp(6) without time zone NOT NULL
+);
+
+
+--
+-- Name: prices_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.prices_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: prices_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.prices_id_seq OWNED BY public.prices.id;
 
 
 --
@@ -140,6 +195,13 @@ ALTER SEQUENCE public.variants_id_seq OWNED BY public.variants.id;
 
 
 --
+-- Name: prices id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.prices ALTER COLUMN id SET DEFAULT nextval('public.prices_id_seq'::regclass);
+
+
+--
 -- Name: products id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -159,6 +221,14 @@ ALTER TABLE ONLY public.variants ALTER COLUMN id SET DEFAULT nextval('public.var
 
 ALTER TABLE ONLY public.ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: prices prices_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.prices
+    ADD CONSTRAINT prices_pkey PRIMARY KEY (id);
 
 
 --
@@ -186,10 +256,45 @@ ALTER TABLE ONLY public.variants
 
 
 --
+-- Name: active_price_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX active_price_index ON public.prices USING btree (variant_id, active_during);
+
+
+--
+-- Name: discounted_price_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX discounted_price_index ON public.prices USING btree (variant_id, was_amount);
+
+
+--
+-- Name: index_prices_on_currency_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_prices_on_currency_id ON public.prices USING btree (currency_id);
+
+
+--
+-- Name: index_prices_on_variant_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_prices_on_variant_id ON public.prices USING btree (variant_id);
+
+
+--
 -- Name: index_variants_on_product_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_variants_on_product_id ON public.variants USING btree (product_id);
+
+
+--
+-- Name: price_ordering_index; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX price_ordering_index ON public.prices USING btree (variant_id, starts_at, ends_at);
 
 
 --
@@ -207,6 +312,20 @@ CREATE UNIQUE INDEX unique_account_variant_references ON public.variants USING b
 
 
 --
+-- Name: prices price_create_active_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER price_create_active_trigger AFTER INSERT ON public.prices FOR EACH ROW EXECUTE FUNCTION public.maintain_price_active_during();
+
+
+--
+-- Name: prices price_update_active_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER price_update_active_trigger AFTER UPDATE ON public.prices FOR EACH ROW WHEN (((old.starts_at <> new.starts_at) OR (old.starts_at <> new.starts_at))) EXECUTE FUNCTION public.maintain_price_active_during();
+
+
+--
 -- Name: variants variants_position_clash_trigger; Type: TRIGGER; Schema: public; Owner: -
 --
 
@@ -220,6 +339,8 @@ CREATE TRIGGER variants_position_clash_trigger AFTER INSERT OR UPDATE ON public.
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
+('20251220190848'),
+('20251219212004'),
 ('20251213221523'),
 ('20251206213834'),
 ('20251128191922');

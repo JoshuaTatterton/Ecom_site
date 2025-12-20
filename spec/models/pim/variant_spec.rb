@@ -1,11 +1,7 @@
 RSpec.describe Pim::Variant, type: :model do
-  it "is creatable" do
-    # Arrange
-    product = Pim::Product.create(
-      reference: "product",
-      title: "Product"
-    )
+  let(:product) { Pim::Product.create(reference: "product", title: "Product") }
 
+  it "is creatable" do
     # Act
     created_variant = Pim::Variant.create(
       reference: "variant",
@@ -20,9 +16,6 @@ RSpec.describe Pim::Variant, type: :model do
 
   describe "#position" do
     it "is defaulted to 0 as the only product variant" do
-      # Arrange
-      product = Pim::Product.create(reference: "product", title: "Product")
-
       # Act
       variant = Pim::Variant.new(reference: "variant", title: "Variant", product: product)
 
@@ -35,7 +28,6 @@ RSpec.describe Pim::Variant, type: :model do
 
     it "is defaulted to the variant count on the product" do
       # Arrange
-      product = Pim::Product.create(reference: "product", title: "Product")
       3.times { |i| product.variants.create(reference: "v#{i}", title: "V#{i}") }
 
       # Act
@@ -51,7 +43,6 @@ RSpec.describe Pim::Variant, type: :model do
     context "when creating a variant with a position that exists on the product" do
       it "increments all existing variant's positions greater than new variants position" do
         # Arrange
-        product = Pim::Product.create(reference: "product", title: "Product")
         variant_0 = product.variants.create(reference: "v0", title: "V0", position: 0)
         variant_1 = product.variants.create(reference: "v1", title: "V1", position: 1)
         variant_2 = product.variants.create(reference: "v2", title: "V2", position: 2)
@@ -92,6 +83,67 @@ RSpec.describe Pim::Variant, type: :model do
     end
   end
 
+  context "with" do
+    let(:variant) { Pim::Variant.create(reference: "variant", title: "Variant", product: product) }
+    let(:gbp) { Currency.create(default: true, **CurrencyHelper::CURRENCIES["GBP"]) }
+    let(:eur) { Currency.create(CurrencyHelper::CURRENCIES["EUR"]) }
+
+    let(:oldest_date) { 2.days.ago }
+    let(:past_date) { 1.day.ago }
+    let(:future_date) { 1.day.from_now }
+    let(:newest_date) { 2.day.from_now }
+
+    let!(:active_longer_price) { variant.prices.create(starts_at: past_date, ends_at: newest_date, amount: 10, currency: gbp) }
+    let!(:active_high_price) { variant.prices.create(starts_at: past_date, ends_at: future_date, amount: 7, currency: gbp) }
+    let!(:active_cheap_price) { variant.prices.create(starts_at: past_date, ends_at: future_date, amount: 5, currency: gbp) }
+    let!(:expired_price) { variant.prices.create(starts_at: oldest_date, ends_at: past_date, amount: 10, currency: gbp) }
+    let!(:scheduled_price) { variant.prices.create(starts_at: future_date, ends_at: newest_date, amount: 10, currency: gbp) }
+    let!(:active_eur_price) { variant.prices.create(starts_at: past_date, ends_at: future_date, amount: 8, currency: eur) }
+
+    describe "#prices" do
+      it "is sorted correctly" do
+        # Act
+        price_ids = variant.prices.pluck(:id)
+
+        # Assert
+        expect(price_ids).to eq([
+          expired_price.id,
+          active_cheap_price.id,
+          active_high_price.id,
+          active_eur_price.id,
+          active_longer_price.id,
+          scheduled_price.id
+        ])
+      end
+    end
+
+    describe "#active_price" do
+      context "is the cheapest price" do
+        context "with the most recent starts_at in the past," do
+          context "closest ends_at in the future," do
+            it "for default currency" do
+              # Act
+              active_price = variant.active_price
+
+              # Assert
+              expect(active_price).to eq(active_cheap_price)
+            end
+
+            it "for scoped currency" do
+              # Act
+              active_price = Switch.currency("EUR") {
+                variant.active_price
+              }
+
+              # Assert
+              expect(active_price).to eq(active_eur_price)
+            end
+          end
+        end
+      end
+    end
+  end
+
   context "validations" do
     describe "#reference" do
       it "is required" do
@@ -108,7 +160,6 @@ RSpec.describe Pim::Variant, type: :model do
       it "is readonly" do
         # Arrange
         original_reference = "old"
-        product = Pim::Product.create(reference: "product", title: "Product")
         variant = product.variants.create(
           reference: original_reference,
           title: "Variant"
@@ -182,9 +233,6 @@ RSpec.describe Pim::Variant, type: :model do
 
     describe "#visible" do
       it "defaults to false" do
-        # Arrange
-        product = Pim::Product.create(reference: "product", title: "Product")
-
         # Act
         variant = product.variants.create(
           reference: "variant",

@@ -1,6 +1,8 @@
 class Currency < ApplicationRecord
   include AccountScoped
 
+  has_many :prices, class_name: "Pim::Price", dependent: :restrict_with_error
+
   validates :iso, presence: true,
     uniqueness: { scope: :account_reference },
     inclusion: { in: CurrencyHelper::CURRENCY_ISOS }

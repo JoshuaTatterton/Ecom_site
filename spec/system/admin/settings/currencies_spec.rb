@@ -301,5 +301,21 @@ RSpec.describe "Currencies Admin", type: :system do
         expect(page).not_to have_selector("a[href='#{admin_currency_path(Switch.current_account, usd.id)}']")
       end
     end
+
+    scenario "cannot remove a currency with prices" do
+      # Arrange
+      gbp = Currency.create(**CurrencyHelper::CURRENCIES["GBP"])
+      product = Pim::Product.create(reference: "product", title: "Product")
+      variant = Pim::Variant.create(reference: "variant", title: "Variant", product: product)
+      price = variant.prices.create(starts_at: 2.days.ago, ends_at: 2.days.from_now, amount: 10, currency: gbp)
+
+      # Act
+      visit admin_currencies_path(Switch.current_account)
+
+      # Assert
+      within("tr#currency_#{gbp.id}") do
+        expect(page).not_to have_selector("a[href='#{admin_currency_path(Switch.current_account, gbp.id)}']")
+      end
+    end
   end
 end
