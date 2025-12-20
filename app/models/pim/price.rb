@@ -10,7 +10,7 @@ module Pim
     validates :starts_at, presence: true
     validates :ends_at, presence: true, comparison: { greater_than: :starts_at }
 
-    normalizes :starts_at, with: ->starts_at { starts_at.beginning_of_minute }
-    normalizes :ends_at, with: ->ends_at { ends_at.beginning_of_minute }
+    normalizes :starts_at, with: ->(starts_at) { starts_at.beginning_of_minute }
+    normalizes :ends_at, with: ->(ends_at) { ends_at.beginning_of_minute }
   end
 end

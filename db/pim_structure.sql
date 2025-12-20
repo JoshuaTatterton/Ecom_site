@@ -52,7 +52,7 @@ CREATE FUNCTION public.maintain_price_active_during() RETURNS trigger
       BEGIN
         UPDATE prices
         SET
-          active_during = tsrange(NEW.starts_at,NEW.ends_at)
+          active_during = tsrange(NEW.starts_at, NEW.ends_at, '[]')
         WHERE id = NEW.id;
         RETURN NEW;
       END;

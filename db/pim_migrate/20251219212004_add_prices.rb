@@ -23,7 +23,7 @@ class AddPrices < ActiveRecord::Migration[8.1]
       BEGIN
         UPDATE prices
         SET
-          active_during = tsrange(NEW.starts_at,NEW.ends_at)
+          active_during = tsrange(NEW.starts_at, NEW.ends_at, '[]')
         WHERE id = NEW.id;
         RETURN NEW;
       END;

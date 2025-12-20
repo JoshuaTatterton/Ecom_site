@@ -3,18 +3,6 @@ RSpec.describe Pim::Price, type: :model do
   let(:variant) { product.variants.create(reference: "product", title: "Product") }
   let(:currency) { Currency.create(CurrencyHelper::CURRENCIES["GBP"]) }
 
-  # it "is creatable" do
-  #   # Act
-  #   created_price = Pim::Price.create(
-  #     reference: "variant",
-  #     title: "Variant",
-  #     variant: variant
-  #   )
-
-  #   # Assert
-  #   expect(created_price).to be_persisted
-  # end
-
   describe "#starts_at" do
     it "is normalized to the minute" do
       # Arrange
