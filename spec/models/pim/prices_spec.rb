@@ -57,7 +57,7 @@ RSpec.describe Pim::Price, type: :model do
       )
 
       # Assert
-      expect(price.reload.active_during).to eq(starts_at.beginning_of_minute...ends_at.beginning_of_minute)
+      expect(price.reload.active_during).to eq(starts_at.beginning_of_minute..ends_at.beginning_of_minute)
     end
   end
 

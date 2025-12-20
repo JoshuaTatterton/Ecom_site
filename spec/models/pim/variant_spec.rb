@@ -83,6 +83,67 @@ RSpec.describe Pim::Variant, type: :model do
     end
   end
 
+  context "with" do
+    let(:variant) { Pim::Variant.create(reference: "variant", title: "Variant", product: product) }
+    let(:gbp) { Currency.create(default: true, **CurrencyHelper::CURRENCIES["GBP"]) }
+    let(:eur) { Currency.create(CurrencyHelper::CURRENCIES["EUR"]) }
+
+    let(:oldest_date) { 2.days.ago }
+    let(:past_date) { 1.day.ago }
+    let(:future_date) { 1.day.from_now }
+    let(:newest_date) { 2.day.from_now }
+
+    let!(:active_longer_price) { variant.prices.create(starts_at: past_date, ends_at: newest_date, amount: 10, currency: gbp) }
+    let!(:active_high_price) { variant.prices.create(starts_at: past_date, ends_at: future_date, amount: 7, currency: gbp) }
+    let!(:active_cheap_price) { variant.prices.create(starts_at: past_date, ends_at: future_date, amount: 5, currency: gbp) }
+    let!(:expired_price) { variant.prices.create(starts_at: oldest_date, ends_at: past_date, amount: 10, currency: gbp) }
+    let!(:scheduled_price) { variant.prices.create(starts_at: future_date, ends_at: newest_date, amount: 10, currency: gbp) }
+    let!(:active_eur_price) { variant.prices.create(starts_at: past_date, ends_at: future_date, amount: 8, currency: eur) }
+
+    describe "#prices" do
+      it "is sorted correctly" do
+        # Act
+        price_ids = variant.prices.pluck(:id)
+
+        # Assert
+        expect(price_ids).to eq([
+          expired_price.id,
+          active_cheap_price.id,
+          active_high_price.id,
+          active_eur_price.id,
+          active_longer_price.id,
+          scheduled_price.id
+        ])
+      end
+    end
+
+    describe "#active_price" do
+      context "is the cheapest price" do
+        context "with the most recent starts_at in the past," do
+          context "closest ends_at in the future," do
+            it "for default currency" do
+              # Act
+              active_price = variant.active_price
+
+              # Assert
+              expect(active_price).to eq(active_cheap_price)
+            end
+
+            it "for scoped currency" do
+              # Act
+              active_price = Switch.currency("EUR") {
+                variant.active_price
+              }
+
+              # Assert
+              expect(active_price).to eq(active_eur_price)
+            end
+          end
+        end
+      end
+    end
+  end
+
   context "validations" do
     describe "#reference" do
       it "is required" do

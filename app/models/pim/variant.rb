@@ -3,7 +3,12 @@ module Pim
     include AccountScoped
 
     belongs_to :product
-    has_many :prices
+    has_many :prices, -> { order(starts_at: :asc, ends_at: :asc, amount: :asc) }
+    has_one :active_price, -> {
+      where("active_during @> NOW()::timestamp")
+      .where(currency: Switch.current_currency)
+      .order(starts_at: :asc, ends_at: :asc, amount: :asc)
+    }, class_name: "Pim::Price"
 
     attr_readonly :reference
 
