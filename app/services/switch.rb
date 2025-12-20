@@ -23,11 +23,11 @@ class Switch
     def account(reference, &block)
       previous_reference = Thread.current[CURRENT_ACCOUNT_KEY]
       Thread.current[CURRENT_ACCOUNT_KEY] = reference
-      # Reset default currency on scoping
       Thread.current["#{CURRENT_CURRENCY_KEY}_default"] = nil
 
       block.yield
     ensure
+      Thread.current["#{CURRENT_CURRENCY_KEY}_default"] = nil
       Thread.current[CURRENT_ACCOUNT_KEY] = previous_reference
     end
 
