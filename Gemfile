@@ -64,7 +64,7 @@ group :development, :test do
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
 
-  gem "strong_migrations", "~> 2.5.1"
+  gem "strong_migrations", "~> 2.5.2"
 
   gem "dotenv", "~> 3.2"
 end
