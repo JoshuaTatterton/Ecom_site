@@ -88,7 +88,7 @@ GEM
     bindex (0.8.1)
     bootsnap (1.19.0)
       msgpack (~> 1.2)
-    brakeman (7.1.1)
+    brakeman (7.1.2)
       racc
     builder (3.3.0)
     bundler-audit (0.9.3)
@@ -449,7 +449,7 @@ DEPENDENCIES
   activerecord_json_validator (~> 3.1)
   bcrypt (~> 3.1.7)
   bootsnap
-  brakeman (~> 7.1.1)
+  brakeman (~> 7.1.2)
   bundler-audit
   cancancan (~> 3.6)
   capybara (~> 3.40)
